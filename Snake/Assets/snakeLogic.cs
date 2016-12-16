@@ -130,9 +130,16 @@ public class snakeLogic : MonoBehaviour
     {
         var head = snake.GetChild(0);
         Vector2 pos = head.transform.position;
-
+        
         pos.x += (float)x;
         pos.y += (float)y;
+
+        float maxX = 11;
+        float maxY = (float)4.5;
+
+        // checking for boundaries
+        pos.x = pos.x > maxX ? -maxX : pos.x < -maxX ? maxX : pos.x;
+        pos.y = pos.y > maxY ? -maxY : pos.y < -maxY ? maxY : pos.y;
 
         head.transform.position = pos;
 
@@ -144,7 +151,6 @@ public class snakeLogic : MonoBehaviour
     // moves the food to a random position
     void RespawnFood()
     {// 11 4.5
-        //Debug.Log("Length:" + snake.childCount);
 
         Vector2 pos = food.position;
 
