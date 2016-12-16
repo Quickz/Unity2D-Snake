@@ -4,8 +4,10 @@ using System.Collections;
 
 public class snakeLogic : MonoBehaviour
 {
+    bool gameOver = false;
+
     float time = 0;
-    float gameSpeed = (float)0.075;
+    float gameSpeed = (float)0.085;
     int score = 0;
 
     string direction = "right";
@@ -36,6 +38,8 @@ public class snakeLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameOver)
+            return;
 
         if (Input.GetKeyDown("right") || Input.GetKeyDown("d"))
         {
@@ -59,6 +63,7 @@ public class snakeLogic : MonoBehaviour
         {
             time = 0;
             MoveSnake();
+            if (CheckCollision()) return;
             CheckForFood();
         }
 
@@ -211,6 +216,24 @@ public class snakeLogic : MonoBehaviour
     {
         score += 10;
         scoreTxt.text = "Score: " + score;
+    }
+
+    // checks if the head is inside the tail
+    bool CheckCollision()
+    {
+        var head = snake.GetChild(0);
+        for (int i = 1; i < snake.childCount; i++)
+        {
+            Vector2 tailPos = snake.GetChild(i).position;
+            if ((Vector2)head.position == tailPos)
+            {
+                var spr = head.transform.GetComponent<SpriteRenderer>();
+                spr.color = Color.red;
+                gameOver = true;
+                return true;
+            }
+        }
+        return false;
     }
 
 }
