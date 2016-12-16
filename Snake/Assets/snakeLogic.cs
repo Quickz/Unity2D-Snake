@@ -4,7 +4,7 @@ using System.Collections;
 public class snakeLogic : MonoBehaviour
 {
     float time = 0;
-    float gameSpeed = (float)0.15;
+    float gameSpeed = (float)0.1;
 
     string direction = "right";
     string lastDir = "right";
@@ -21,6 +21,9 @@ public class snakeLogic : MonoBehaviour
         snake = game.GetChild(0);
         food = game.GetChild(1);
         tailSprite = snake.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+
+        RespawnFood();
+
     }
 
     // Update is called once per frame
@@ -133,15 +136,36 @@ public class snakeLogic : MonoBehaviour
 
         head.transform.position = pos;
 
-
-        //  Debug.Log(head.localPosition.x);
+        
+        // Debug.Log("X:" + head.localPosition.x);
+        // Debug.Log("Y:" + head.localPosition.y);
     }
 
+    // moves the food to a random position
     void RespawnFood()
-    {
-        Debug.Log("Length:" + snake.childCount);
+    {// 11 4.5
+        //Debug.Log("Length:" + snake.childCount);
+
+        Vector2 pos = food.position;
+
+        pos.x = (float)Random.Range(-22, 22) / 2;
+        pos.y = (float)Random.Range(-9, 9) / 2;
+
+        // making sure the food doesn't spawn inside the snake
+        for (int i = 0; i < snake.childCount; i++)
+        {
+            Vector2 tailPos = snake.GetChild(i).position;
+            if (tailPos == pos)
+            {
+                Debug.Log("food in tail!!!!!!!!!!!!");
+                RespawnFood();
+                return;
+            }
+        }
+
+        food.position = pos;
+
         Debug.Log("Food eaten!!");
-        Debug.Log("Length:" + snake.childCount);
     }
 
     void CheckForFood ()
