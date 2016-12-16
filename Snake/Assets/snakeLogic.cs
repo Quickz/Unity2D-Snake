@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class snakeLogic : MonoBehaviour
 {
     float time = 0;
-    float gameSpeed = (float)0.1;
+    float gameSpeed = (float)0.075;
+    int score = 0;
 
     string direction = "right";
     string lastDir = "right";
@@ -12,6 +14,7 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
+    Text scoreTxt;
     Sprite tailSprite;
 
     // Use this for initialization
@@ -21,6 +24,7 @@ public class snakeLogic : MonoBehaviour
         snake = game.GetChild(0);
         food = game.GetChild(1);
         tailSprite = snake.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+        scoreTxt = game.GetChild(3).GetChild(0).GetComponent<Text>();
 
         RespawnFood();
 
@@ -178,7 +182,7 @@ public class snakeLogic : MonoBehaviour
     {
         if (food.position == snake.GetChild(0).position)
         {
-
+            UpScore();
             GrowSnake();
             RespawnFood();
         }
@@ -200,6 +204,12 @@ public class snakeLogic : MonoBehaviour
 
         tail.transform.position = snake.GetChild(0).position;
         tail.transform.parent = snake;
+    }
+
+    void UpScore ()
+    {
+        score += 10;
+        scoreTxt.text = "Score: " + score;
     }
 
 }
