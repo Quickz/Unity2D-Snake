@@ -11,6 +11,9 @@ public class snakeLogic : MonoBehaviour
     string direction = "right";
     string lastDir = "right";
 
+    float mapX = (float)10;
+    float mapY = 4;
+
     Transform game;
     Transform snake;
     Transform food;
@@ -138,12 +141,9 @@ public class snakeLogic : MonoBehaviour
         pos.x += (float)x;
         pos.y += (float)y;
 
-        float maxX = 11;
-        float maxY = (float)4.5;
-
         // checking for boundaries
-        pos.x = pos.x > maxX ? -maxX : pos.x < -maxX ? maxX : pos.x;
-        pos.y = pos.y > maxY ? -maxY : pos.y < -maxY ? maxY : pos.y;
+        pos.x = pos.x > mapX ? -mapX : pos.x < -mapX ? mapX : pos.x;
+        pos.y = pos.y > mapY ? -mapY : pos.y < -mapY ? mapY : pos.y;
 
         head.transform.position = pos;
 
@@ -158,8 +158,9 @@ public class snakeLogic : MonoBehaviour
 
         Vector2 pos = food.position;
 
-        pos.x = (float)Random.Range(-22, 22) / 2;
-        pos.y = (float)Random.Range(-9, 9) / 2;
+        pos.x = (float)Random.Range((int)-mapX * 2, (int)mapX * 2) / 2;
+        pos.y = (float)Random.Range((int)-mapY * 2, (int)mapY * 2) / 2;
+        Debug.Log(pos.x + " " + pos.y);
 
         // making sure the food doesn't spawn inside the snake
         for (int i = 0; i < snake.childCount; i++)
