@@ -19,7 +19,7 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
-    Text scoreTxt;
+    Transform canvas;
     Sprite tailSprite;
 
     // Use this for initialization
@@ -29,7 +29,7 @@ public class snakeLogic : MonoBehaviour
         snake = game.GetChild(0);
         food = game.GetChild(1);
         tailSprite = snake.GetChild(0).GetComponent<SpriteRenderer>().sprite;
-        scoreTxt = game.GetChild(3).GetChild(0).GetComponent<Text>();
+        canvas = game.GetChild(3);
 
         RespawnFood();
 
@@ -165,7 +165,7 @@ public class snakeLogic : MonoBehaviour
 
         pos.x = (float)Random.Range((int)-mapX * 2, (int)mapX * 2) / 2;
         pos.y = (float)Random.Range((int)-mapY * 2, (int)mapY * 2) / 2;
-        Debug.Log(pos.x + " " + pos.y);
+        //Debug.Log(pos.x + " " + pos.y);
 
         // making sure the food doesn't spawn inside the snake
         for (int i = 0; i < snake.childCount; i++)
@@ -173,7 +173,7 @@ public class snakeLogic : MonoBehaviour
             Vector2 tailPos = snake.GetChild(i).position;
             if (tailPos == pos)
             {
-                Debug.Log("food in tail!!!!!!!!!!!!");
+                //Debug.Log("food in tail!!!!!!!!!!!!");
                 RespawnFood();
                 return;
             }
@@ -181,7 +181,7 @@ public class snakeLogic : MonoBehaviour
 
         food.position = pos;
 
-        Debug.Log("Food eaten!!");
+        //Debug.Log("Food eaten!!");
     }
 
     void CheckForFood ()
@@ -215,6 +215,7 @@ public class snakeLogic : MonoBehaviour
     void UpScore ()
     {
         score += 10;
+        Text scoreTxt = canvas.GetChild(0).GetComponent<Text>();
         scoreTxt.text = "Score: " + score;
     }
 
@@ -227,6 +228,8 @@ public class snakeLogic : MonoBehaviour
             Vector2 tailPos = snake.GetChild(i).position;
             if ((Vector2)head.position == tailPos)
             {
+                GameOverNotification();
+
                 var spr = head.transform.GetComponent<SpriteRenderer>();
                 spr.color = Color.red;
                 gameOver = true;
@@ -234,6 +237,29 @@ public class snakeLogic : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void GameOverNotification ()
+    {
+        GameObject txtObj = new GameObject();
+        txtObj.name = "gameOver";
+        
+        Text txt = txtObj.AddComponent<Text>();
+        txt.text = "Game Over";
+        txt.alignment = TextAnchor.MiddleCenter;
+        txt.fontSize = 17;
+        
+        // assigning built in font
+        txt.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+        txt.transform.SetParent(canvas);
+
+        // moving position to center
+        Vector2 pos = txt.transform.localPosition;
+        pos.x = 0;
+        pos.y = 0;
+        txt.transform.localPosition = pos;
+
     }
 
 }
