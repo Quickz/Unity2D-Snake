@@ -21,6 +21,7 @@ public class snakeLogic : MonoBehaviour
     Transform food;
     Transform canvas;
     Sprite tailSprite;
+    GameObject gameOverNote;
 
     // Use this for initialization
     void Start()
@@ -38,10 +39,11 @@ public class snakeLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameOver)
+        if (Input.GetKeyDown("r"))
+            RestartGame();
+        else if (gameOver)
             return;
-
-        if (Input.GetKeyDown("right") || Input.GetKeyDown("d"))
+        else if (Input.GetKeyDown("right") || Input.GetKeyDown("d"))
         {
             ChangeDir("right");
         }
@@ -212,9 +214,9 @@ public class snakeLogic : MonoBehaviour
         tail.transform.parent = snake;
     }
 
-    void UpScore ()
+    void UpScore (int addition = 10)
     {
-        score += 10;
+        score += addition;
         Text scoreTxt = canvas.GetChild(0).GetComponent<Text>();
         scoreTxt.text = "Score: " + score;
     }
@@ -230,8 +232,7 @@ public class snakeLogic : MonoBehaviour
             {
                 GameOverNotification();
 
-                var spr = head.transform.GetComponent<SpriteRenderer>();
-                spr.color = Color.red;
+                SetHeadColor(Color.red);
                 gameOver = true;
                 return true;
             }
@@ -239,12 +240,19 @@ public class snakeLogic : MonoBehaviour
         return false;
     }
 
+    void SetHeadColor(Color color)
+    {
+        var head = snake.GetChild(0);
+        var spr = head.transform.GetComponent<SpriteRenderer>();
+        spr.color = color;
+    }
+
     void GameOverNotification ()
     {
-        GameObject txtObj = new GameObject();
-        txtObj.name = "gameOver";
+        gameOverNote = new GameObject();
+        gameOverNote.name = "gameOver";
         
-        Text txt = txtObj.AddComponent<Text>();
+        Text txt = gameOverNote.AddComponent<Text>();
         txt.text = "Game Over";
         txt.alignment = TextAnchor.MiddleCenter;
         txt.fontSize = 17;
@@ -259,6 +267,36 @@ public class snakeLogic : MonoBehaviour
         pos.x = 0;
         pos.y = 0;
         txt.transform.localPosition = pos;
+
+    }
+
+    void RestartGame()
+    {
+        // resetting length
+        for (int i = 3; i < snake.childCount; i++)
+        {
+            Destroy(snake.GetChild(i).gameObject);
+        }
+
+        // resetting position
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2 pos = snake.GetChild(i).position;
+            pos.x = (float)-i / 2;
+            pos.y = 0;
+            snake.GetChild(i).position = pos;
+        }
+
+        // resetting direction
+        direction = "right";
+        lastDir = "right";
+
+        // resetting score
+        UpScore(-score);
+
+        SetHeadColor(Color.white);
+        Destroy(gameOverNote);
+        gameOver = false;
 
     }
 
