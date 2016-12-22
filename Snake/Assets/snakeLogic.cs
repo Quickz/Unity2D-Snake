@@ -297,7 +297,7 @@ public class snakeLogic : MonoBehaviour
         SetHeadColor(Color.white);
         Destroy(gameOverNote);
         gameOver = false;
-
+        RespawnFood();
     }
 
 }
