@@ -19,12 +19,10 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
-    Transform canvas;
+    Transform background;
+    TextMesh scoreObj;
     Sprite tailSprite;
     GameObject gameOverNote;
-
-    int width;
-    int height;
 
     // Use this for initialization
     void Start()
@@ -33,35 +31,10 @@ public class snakeLogic : MonoBehaviour
         snake = game.GetChild(0);
         food = game.GetChild(1);
         tailSprite = snake.GetChild(0).GetComponent<SpriteRenderer>().sprite;
-        canvas = game.GetChild(3);
+        scoreObj = game.GetChild(3).GetComponent<TextMesh>();
+        background = game.GetChild(2);
 
         RespawnFood();
-
-        // width = Screen.width / 50 * 50;
-        // height = Screen.height / 50 * 50;
-        // Debug.Log(width + " " + height);
-        // var background = game.GetChild(2).GetComponent<SpriteRenderer>();
-        // Debug.Log(background.sprite.pixelsPerUnit);
-        //  background.sprite.rect.width = 50;
-
-       // var background = game.GetChild(2);
-       // width = Screen.width / 20 * 20;
-       // height = Screen.height / 20 * 20;
-       // Debug.Log(width + " " + height);
-
-        //var spr = background.GetComponent<SpriteRenderer>().sprite;
-
-       // var sz = spr.bounds.extents;
-       // sz.x = 5;
-        //spr.bounds.extents = sz;
-        //var test = spr.bounds.extents;
-        //Debug.Log(test);
-
-      //  Vector2 scale = background.localScale;
-      //  scale.x = width / 7;
-       // scale.y = height / 7;
-       // background.localScale = scale;
-        //background.localScale.y = height / 20;
 
     }
 
@@ -169,7 +142,7 @@ public class snakeLogic : MonoBehaviour
     }
 
     // changes head position
-    void ChangePos (float x = 0, float y = 0)
+    void ChangePos(float x = 0, float y = 0)
     {
         var head = snake.GetChild(0);
         Vector2 pos = head.transform.position;
@@ -215,7 +188,7 @@ public class snakeLogic : MonoBehaviour
         //Debug.Log("Food eaten!!");
     }
 
-    void CheckForFood ()
+    void CheckForFood()
     {
         if (food.position == snake.GetChild(0).position)
         {
@@ -226,7 +199,7 @@ public class snakeLogic : MonoBehaviour
 
     }
 
-    void GrowSnake ()
+    void GrowSnake()
     {
         var tail = new GameObject();
         tail.name = "tail" + (snake.childCount - 1);
@@ -243,11 +216,10 @@ public class snakeLogic : MonoBehaviour
         tail.transform.parent = snake;
     }
 
-    void UpScore (int addition = 10)
+    void UpScore(int addition = 10)
     {
         score += addition;
-        Text scoreTxt = canvas.GetChild(0).GetComponent<Text>();
-        scoreTxt.text = "Score: " + score;
+        scoreObj.text = "Score: " + score;
     }
 
     // checks if the head is inside the tail
@@ -276,20 +248,32 @@ public class snakeLogic : MonoBehaviour
         spr.color = color;
     }
 
-    void GameOverNotification ()
+    void GameOverNotification()
     {
         gameOverNote = new GameObject();
         gameOverNote.name = "gameOver";
-        
-        Text txt = gameOverNote.AddComponent<Text>();
+
+        // changing scale
+        var scale = gameOverNote.transform.localScale;
+        scale.x = 0.5f;
+        scale.y = 0.5f;
+        gameOverNote.transform.localScale = scale;
+
+        TextMesh txt = gameOverNote.AddComponent<TextMesh>();
         txt.text = "Game Over";
-        txt.alignment = TextAnchor.MiddleCenter;
-        txt.fontSize = 17;
+        
+        // making sure the text is in the front
+        txt.offsetZ = -1;
+
+        // changing it's anchor point to center
+        txt.anchor = TextAnchor.MiddleCenter;
+
+        txt.fontSize = 28;
         
         // assigning built in font
         txt.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
 
-        txt.transform.SetParent(canvas);
+        txt.color = Color.red;
 
         // moving position to center
         Vector2 pos = txt.transform.localPosition;
