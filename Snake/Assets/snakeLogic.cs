@@ -14,7 +14,7 @@ public class snakeLogic : MonoBehaviour
     string lastDir = "right";
 
     float mapX = (float)10;
-    float mapY = 4;
+    float mapY = (float)5;
 
     Transform game;
     Transform snake;
@@ -22,6 +22,9 @@ public class snakeLogic : MonoBehaviour
     Transform canvas;
     Sprite tailSprite;
     GameObject gameOverNote;
+
+    int width;
+    int height;
 
     // Use this for initialization
     void Start()
@@ -33,6 +36,32 @@ public class snakeLogic : MonoBehaviour
         canvas = game.GetChild(3);
 
         RespawnFood();
+
+        // width = Screen.width / 50 * 50;
+        // height = Screen.height / 50 * 50;
+        // Debug.Log(width + " " + height);
+        // var background = game.GetChild(2).GetComponent<SpriteRenderer>();
+        // Debug.Log(background.sprite.pixelsPerUnit);
+        //  background.sprite.rect.width = 50;
+
+       // var background = game.GetChild(2);
+       // width = Screen.width / 20 * 20;
+       // height = Screen.height / 20 * 20;
+       // Debug.Log(width + " " + height);
+
+        //var spr = background.GetComponent<SpriteRenderer>().sprite;
+
+       // var sz = spr.bounds.extents;
+       // sz.x = 5;
+        //spr.bounds.extents = sz;
+        //var test = spr.bounds.extents;
+        //Debug.Log(test);
+
+      //  Vector2 scale = background.localScale;
+      //  scale.x = width / 7;
+       // scale.y = height / 7;
+       // background.localScale = scale;
+        //background.localScale.y = height / 20;
 
     }
 
