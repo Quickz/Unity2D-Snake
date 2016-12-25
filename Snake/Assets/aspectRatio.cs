@@ -18,9 +18,8 @@ public class aspectRatio : MonoBehaviour {
 
         // obtaining camera component to modify its viewport
         Camera camera = GetComponent<Camera>();
-
-
         Rect rect = camera.rect;
+
         // if scaled height is less than current height, add letterbox
         if (scaleheight < 1.0f)
         {

@@ -7,14 +7,14 @@ public class snakeLogic : MonoBehaviour
     bool gameOver = false;
 
     float time = 0;
-    float gameSpeed = (float)0.085;
+    float gameSpeed = 0.085f;
     int score = 0;
 
     string direction = "right";
     string lastDir = "right";
 
-    float mapX = (float)10;
-    float mapY = (float)5;
+    float mapX = 10;
+    float mapY = 5;
 
     Transform game;
     Transform snake;
@@ -105,19 +105,19 @@ public class snakeLogic : MonoBehaviour
         {
             case "right":
                 MoveTail();
-                ChangePos((float)0.5, 0);
+                ChangeHeadPos(0.5f, 0);
                 break;
             case "left":
                 MoveTail();
-                ChangePos((float)-0.5, 0);
+                ChangeHeadPos(-0.5f, 0);
                 break;
             case "up":
                 MoveTail();
-                ChangePos(0, (float)0.5);
+                ChangeHeadPos(0, 0.5f);
                 break;
             case "down":
                 MoveTail();
-                ChangePos(0, (float)-0.5);
+                ChangeHeadPos(0, -0.5f);
                 break;
         }
     }
@@ -129,20 +129,15 @@ public class snakeLogic : MonoBehaviour
 
         for (int i = tailLength; i > 0; i--)
         {
-            var frontPiece = snake.GetChild(i - 1);
+            var frontPiece = snake.GetChild(i - 1).position;
             var backPiece = snake.GetChild(i);
-            Vector2 pos = backPiece.transform.position;
-
-            pos.x = frontPiece.transform.position.x;
-            pos.y = frontPiece.transform.position.y;
-
-            backPiece.transform.position = pos;
+            ChangePos(backPiece, frontPiece.x, frontPiece.y);
         }
 
     }
 
     // changes head position
-    void ChangePos(float x = 0, float y = 0)
+    void ChangeHeadPos(float x = 0, float y = 0)
     {
         var head = snake.GetChild(0);
         Vector2 pos = head.transform.position;
@@ -156,20 +151,27 @@ public class snakeLogic : MonoBehaviour
 
         head.transform.position = pos;
 
-        
-        // Debug.Log("X:" + head.localPosition.x);
-        // Debug.Log("Y:" + head.localPosition.y);
+    }
+
+    // changes position of a specified transform
+    void ChangePos(Transform obj, float x = 0, float y = 0)
+    {
+        Vector2 pos = obj.position;
+        pos.x = x;
+        pos.y = y;
+        obj.position = pos;
     }
 
     // moves the food to a random position
     void RespawnFood()
-    {// 11 4.5
+    {
 
         Vector2 pos = food.position;
 
-        pos.x = (float)Random.Range((int)-mapX * 2, (int)mapX * 2) / 2;
-        pos.y = (float)Random.Range((int)-mapY * 2, (int)mapY * 2) / 2;
-        //Debug.Log(pos.x + " " + pos.y);
+        // (int) rounds up the random value
+        // the f makes sure the result is float
+        pos.x = (int)Random.Range(-mapX * 2, mapX * 2) / 2f;
+        pos.y = (int)Random.Range(-mapY * 2, mapY * 2) / 2f;
 
         // making sure the food doesn't spawn inside the snake
         for (int i = 0; i < snake.childCount; i++)
@@ -177,7 +179,6 @@ public class snakeLogic : MonoBehaviour
             Vector2 tailPos = snake.GetChild(i).position;
             if (tailPos == pos)
             {
-                //Debug.Log("food in tail!!!!!!!!!!!!");
                 RespawnFood();
                 return;
             }
@@ -185,7 +186,6 @@ public class snakeLogic : MonoBehaviour
 
         food.position = pos;
 
-        //Debug.Log("Food eaten!!");
     }
 
     void CheckForFood()
@@ -271,15 +271,11 @@ public class snakeLogic : MonoBehaviour
         txt.fontSize = 28;
         
         // assigning built in font
-        txt.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        txt.font = Resources.GetBuiltinResource(
+            typeof(Font), "Arial.ttf"
+            ) as Font;
 
         txt.color = Color.red;
-
-        // moving position to center
-        Vector2 pos = txt.transform.localPosition;
-        pos.x = 0;
-        pos.y = 0;
-        txt.transform.localPosition = pos;
 
     }
 
@@ -287,18 +283,11 @@ public class snakeLogic : MonoBehaviour
     {
         // resetting length
         for (int i = 3; i < snake.childCount; i++)
-        {
             Destroy(snake.GetChild(i).gameObject);
-        }
 
         // resetting position
         for (int i = 0; i < 3; i++)
-        {
-            Vector2 pos = snake.GetChild(i).position;
-            pos.x = (float)-i / 2;
-            pos.y = 0;
-            snake.GetChild(i).position = pos;
-        }
+            ChangePos(snake.GetChild(i), -i / 2f, 0);
 
         // resetting direction
         direction = "right";
@@ -311,6 +300,7 @@ public class snakeLogic : MonoBehaviour
         Destroy(gameOverNote);
         gameOver = false;
         RespawnFood();
+
     }
 
 }
