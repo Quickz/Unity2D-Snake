@@ -5,6 +5,7 @@ using System.Collections;
 public class snakeLogic : MonoBehaviour
 {
     bool gameOver = false;
+    bool gamePaused = false;
 
     float time = 0;
     float gameSpeed = 0.085f;
@@ -23,6 +24,7 @@ public class snakeLogic : MonoBehaviour
     TextMesh scoreObj;
     Sprite tailSprite;
     GameObject gameOverNote;
+    GameObject gamePausedNote;
 
     // Use this for initialization
     void Start()
@@ -43,7 +45,14 @@ public class snakeLogic : MonoBehaviour
     {
         if (Input.GetKeyDown("r"))
             RestartGame();
-        else if (gameOver)
+        if (gameOver)
+            return;
+        else if (Input.GetKeyDown("p") || Input.GetKeyDown("escape"))
+        {
+            if (!gamePaused) PauseGame();
+            else ResumeGame();
+        }
+        else if (gamePaused)
             return;
         else if (Input.GetKeyDown("right") || Input.GetKeyDown("d"))
         {
@@ -206,6 +215,7 @@ public class snakeLogic : MonoBehaviour
         var sprRenderer = tail.gameObject.AddComponent<SpriteRenderer>();
 
         sprRenderer.sprite = tailSprite;
+        sprRenderer.sortingOrder = -1;
 
         // changing scale to value of 2
         Vector2 scale = tail.transform.localScale;
@@ -301,6 +311,20 @@ public class snakeLogic : MonoBehaviour
         gameOver = false;
         RespawnFood();
 
+    }
+    
+    void PauseGame()
+    {
+        gamePausedNote = Instantiate(
+            Resources.Load("gamePaused")
+            ) as GameObject;
+        gamePaused = true;
+    }
+
+    void ResumeGame()
+    {
+        Destroy(gamePausedNote);
+        gamePaused = false;
     }
 
 }
