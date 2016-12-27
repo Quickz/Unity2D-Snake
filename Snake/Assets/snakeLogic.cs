@@ -208,20 +208,16 @@ public class snakeLogic : MonoBehaviour
 
     }
 
+    // adds one square to the tail
     void GrowSnake()
     {
-        var tail = new GameObject();
+        // generating the piece
+        var tail = Instantiate(
+            Resources.Load("tail")
+            ) as GameObject;
+
+        // changing a few properties
         tail.name = "tail" + (snake.childCount - 1);
-        var sprRenderer = tail.gameObject.AddComponent<SpriteRenderer>();
-
-        sprRenderer.sprite = tailSprite;
-        sprRenderer.sortingOrder = -1;
-
-        // changing scale to value of 2
-        Vector2 scale = tail.transform.localScale;
-        scale.x = 2; scale.y = 2;
-        tail.transform.localScale = scale;
-
         tail.transform.position = snake.GetChild(0).position;
         tail.transform.parent = snake;
     }
@@ -260,33 +256,10 @@ public class snakeLogic : MonoBehaviour
 
     void GameOverNotification()
     {
-        gameOverNote = new GameObject();
+        gameOverNote = Instantiate(
+            Resources.Load("gameOver")
+            ) as GameObject;
         gameOverNote.name = "gameOver";
-
-        // changing scale
-        var scale = gameOverNote.transform.localScale;
-        scale.x = 0.5f;
-        scale.y = 0.5f;
-        gameOverNote.transform.localScale = scale;
-
-        TextMesh txt = gameOverNote.AddComponent<TextMesh>();
-        txt.text = "Game Over";
-        
-        // making sure the text is in the front
-        txt.offsetZ = -1;
-
-        // changing it's anchor point to center
-        txt.anchor = TextAnchor.MiddleCenter;
-
-        txt.fontSize = 28;
-        
-        // assigning built in font
-        txt.font = Resources.GetBuiltinResource(
-            typeof(Font), "Arial.ttf"
-            ) as Font;
-
-        txt.color = Color.red;
-
     }
 
     void RestartGame()
@@ -318,6 +291,7 @@ public class snakeLogic : MonoBehaviour
         gamePausedNote = Instantiate(
             Resources.Load("gamePaused")
             ) as GameObject;
+        gamePausedNote.name = "gamePaused";
         gamePaused = true;
     }
 
