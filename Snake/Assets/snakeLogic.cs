@@ -20,9 +20,7 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
-    Transform background;
     TextMesh scoreObj;
-    Sprite tailSprite;
     GameObject gameOverNote;
     GameObject gamePausedNote;
 
@@ -32,9 +30,7 @@ public class snakeLogic : MonoBehaviour
         game = gameObject.transform;
         snake = game.GetChild(0);
         food = game.GetChild(1);
-        tailSprite = snake.GetChild(0).GetComponent<SpriteRenderer>().sprite;
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
-        background = game.GetChild(2);
 
         RespawnFood();
 
@@ -282,6 +278,7 @@ public class snakeLogic : MonoBehaviour
         SetHeadColor(Color.white);
         Destroy(gameOverNote);
         gameOver = false;
+        ResumeGame();
         RespawnFood();
 
     }
