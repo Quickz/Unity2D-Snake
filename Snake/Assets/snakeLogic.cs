@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class snakeLogic : MonoBehaviour
 {
@@ -20,19 +21,28 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
+    Transform enemy;
+    Transform enemyHead;
+
     TextMesh scoreObj;
     GameObject gameOverNote;
     GameObject gamePausedNote;
+
+    AStarSearch enemyPathFinder;
+    List<int[]> enemyPath;
 
     // Use this for initialization
     void Start()
     {
         game = gameObject.transform;
         snake = game.GetChild(0);
-        food = game.GetChild(1);
+        food = game. GetChild(1);
+        enemy = game.GetChild(4);
+        enemyHead = enemy.GetChild(0);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
-
         RespawnFood();
+
+        enemyPathFinder = new AStarSearch(GenMapGrid());
 
     }
 
@@ -70,12 +80,61 @@ public class snakeLogic : MonoBehaviour
         time += Time.deltaTime;
         if (time >= gameSpeed)
         {
+
+
+            MoveEnemy();
+
             time = 0;
             MoveSnake();
             if (CheckCollision()) return;
             CheckForFood();
         }
 
+    }
+
+    void MoveEnemy()
+    {
+        var enemyPos = GetGridCoord(enemyHead.position);
+        var foodPos = GetGridCoord(food.position);
+
+        enemyPath = enemyPathFinder.run(enemyPos, foodPos);
+
+        if (enemyPath != null)
+        {
+            MoveTail(enemy);
+            SetPosFromGrid(enemyPath[1], enemyHead);
+        }
+    }
+
+    // generates empty grid
+    int[,] GenMapGrid()
+    {
+        int[,] grid = new int[(int)(mapX * 4), (int)(mapY * 4)];
+
+        for (int i = 0; i < mapX; i++)
+        {
+            for (int j = 0; j < mapY; j++)
+                grid[i, j] = 0;
+        }
+
+        return grid;
+    }
+
+    // converts ingame coordinate to a coordinate for the grid
+    int[] GetGridCoord(Vector2 position)
+    {
+        int posX = (int)((position.x + mapX) * 2);
+        int posY = (int)((position.y + mapY) * 2);
+        return new int[] { posX, posY };
+    }
+
+    // converts grid coordinates to the world coordinates
+    void SetPosFromGrid(int[] coordinates, Transform obj)
+    {
+        var pos = obj.position;
+        pos.x = coordinates[0] / 2f - mapX;
+        pos.y = coordinates[1] / 2f - mapY;
+        obj.position = pos;
     }
 
     // changes current snake direction
@@ -109,26 +168,26 @@ public class snakeLogic : MonoBehaviour
         switch (direction)
         {
             case "right":
-                MoveTail();
+                MoveTail(snake);
                 ChangeHeadPos(0.5f, 0);
                 break;
             case "left":
-                MoveTail();
+                MoveTail(snake);
                 ChangeHeadPos(-0.5f, 0);
                 break;
             case "up":
-                MoveTail();
+                MoveTail(snake);
                 ChangeHeadPos(0, 0.5f);
                 break;
             case "down":
-                MoveTail();
+                MoveTail(snake);
                 ChangeHeadPos(0, -0.5f);
                 break;
         }
     }
 
     // moves each tail piece based on head position
-    void MoveTail()
+    void MoveTail(Transform snake)
     {
         int tailLength = snake.childCount - 1;
 
@@ -199,6 +258,11 @@ public class snakeLogic : MonoBehaviour
         {
             UpScore();
             GrowSnake();
+            RespawnFood();
+        }
+        else if (food.position == enemyHead.position)
+        {
+
             RespawnFood();
         }
 
