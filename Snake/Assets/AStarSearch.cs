@@ -16,13 +16,14 @@ public class AStarSearch
 
     public List<int[]> run(int[] source, int[] target)
     {
+        
 
         if (source[0] == target[0] && source[1] == target[1])
             return null;
-
+        
         // searching for the path
         Node node = runAlgorithm(source, target);
-
+        
         // formatting the results
         List<int[]> path = findPath(node);
 
@@ -31,7 +32,6 @@ public class AStarSearch
 
     Node runAlgorithm(int[] source, int[] target)
     {
-        
         Node start = new Node(source[0], source[1], source, target);
         
         // discovered nodes to be evaluated
@@ -68,17 +68,16 @@ public class AStarSearch
             );
 
             // looping through neighbours
-            int lng = current.neighbours.Count;
-            for (int i = 0; i < lng; i++)
+            //  int lng = current.neighbours.Count;
+            foreach (Node currNode in current.neighbours)
             {
-                Node currNode = current.neighbours[i];
-
+                
                 // checking if it's in closed list
-                if (closed.IndexOf(currNode) > -1)
+                if (findIndex(closed, currNode) > -1)
                     continue;
                 
                 // if shorter path found
-                int existing = open.IndexOf(currNode);
+                int existing = findIndex(open, currNode);
                 if (existing > -1 &&
                     open[existing].parent.fCost >= current.fCost &&
                     open[existing].parent.gCost > current.gCost)
@@ -90,7 +89,7 @@ public class AStarSearch
                 }
                 
                 // not in open
-                if (open.IndexOf(currNode) < 0)
+                if (findIndex(open, currNode) < 0)
                 {
                     currNode.parent = current;
 
@@ -99,10 +98,12 @@ public class AStarSearch
 
                 }
 
-                // no path found
-                if (open.Count == 0)
-                    return null;
             }
+
+            // no path found
+            if (open.Count == 0)
+                return null;
+
         }
 
     }
@@ -130,11 +131,11 @@ public class AStarSearch
 
     Node lowestCost(List<Node> nodes)
     {
-        Node node = nodes.Aggregate(
-            (x, y) => x.fCost <= y.fCost &&
-                      x.hCost <  y.hCost ? x : y
-        );
-        return node;
+         Node node = nodes.Aggregate(
+             (x, y) => x.fCost <= y.fCost &&
+                       x.hCost <  y.hCost ? x : y
+         );
+         return node;
     }
 
     int findIndex(List<Node> nodes, Node node)
