@@ -26,7 +26,7 @@ public class AStarSearch
         // formatting the results
         List<int[]> path = findPath(node);
 
-        return path;
+        return path.Count > 0 ? path : null;
     }
 
     Node runAlgorithm(int[] source, int[] target)

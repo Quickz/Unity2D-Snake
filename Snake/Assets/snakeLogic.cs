@@ -105,16 +105,17 @@ public class snakeLogic : MonoBehaviour
             MoveTail(enemy);
             SetPosFromGrid(enemyPath[1], enemyHead);
         }
+
     }
 
     void GetGridObstacles()
     {
 
        // for (int i = 1; i < enemy.childCount; i++)
-      //  {
+       // {
             int[] pos = GetGridCoord(enemy.GetChild(0).position);
             enemyPathFinder.grid[pos[0], pos[1]] = 1;
-       // }
+        //}
         
     }
 
@@ -260,6 +261,17 @@ public class snakeLogic : MonoBehaviour
             }
         }
 
+        // making sure the food doesn't spawn inside the enemy
+        for (int i = 0; i < snake.childCount; i++)
+        {
+            Vector2 tailPos = enemy.GetChild(i).position;
+            if (tailPos == pos)
+            {
+                RespawnFood();
+                return;
+            }
+        }
+
         food.position = pos;
 
     }
@@ -274,7 +286,8 @@ public class snakeLogic : MonoBehaviour
         }
         else if (food.position == enemyHead.position)
         {
-            GrowSnake(enemy, "enemyTail");
+           // if (enemy.childCount < 10)//tmp
+                GrowSnake(enemy, "enemyTail");
             RespawnFood();
         }
 
