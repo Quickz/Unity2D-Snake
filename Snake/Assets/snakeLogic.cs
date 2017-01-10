@@ -81,7 +81,8 @@ public class snakeLogic : MonoBehaviour
         if (time >= gameSpeed)
         {
 
-
+            enemyPathFinder.ClearGrid();
+            GetGridObstacles();
             MoveEnemy();
 
             time = 0;
@@ -106,14 +107,25 @@ public class snakeLogic : MonoBehaviour
         }
     }
 
+    void GetGridObstacles()
+    {
+
+       // for (int i = 1; i < enemy.childCount; i++)
+      //  {
+            int[] pos = GetGridCoord(enemy.GetChild(0).position);
+            enemyPathFinder.grid[pos[0], pos[1]] = 1;
+       // }
+        
+    }
+
     // generates empty grid
     int[,] GenMapGrid()
     {
-        int[,] grid = new int[(int)(mapX * 4), (int)(mapY * 4)];
+        int[,] grid = new int[(int)(mapX * 4) + 1, (int)(mapY * 4) + 1];
 
-        for (int i = 0; i < mapX; i++)
+        for (int i = 0; i < grid.GetLength(0); i++)
         {
-            for (int j = 0; j < mapY; j++)
+            for (int j = 0; j < grid.GetLength(1); j++)
                 grid[i, j] = 0;
         }
 
@@ -257,23 +269,23 @@ public class snakeLogic : MonoBehaviour
         if (food.position == snake.GetChild(0).position)
         {
             UpScore();
-            GrowSnake();
+            GrowSnake(snake, "tail");
             RespawnFood();
         }
         else if (food.position == enemyHead.position)
         {
-
+            GrowSnake(enemy, "enemyTail");
             RespawnFood();
         }
 
     }
 
-    // adds one square to the tail
-    void GrowSnake()
+    // adds one square to a tail
+    void GrowSnake(Transform snake, string resource)
     {
         // generating the piece
         var tail = Instantiate(
-            Resources.Load("tail")
+            Resources.Load(resource)
             ) as GameObject;
 
         // changing a few properties

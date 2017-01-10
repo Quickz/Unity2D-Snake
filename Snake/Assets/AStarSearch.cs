@@ -32,8 +32,6 @@ public class AStarSearch
     Node runAlgorithm(int[] source, int[] target)
     {
         
-        this.grid = grid;
-
         Node start = new Node(source[0], source[1], source, target);
         
         // discovered nodes to be evaluated
@@ -121,6 +119,15 @@ public class AStarSearch
         return path;
     }
 
+    public void ClearGrid()
+    {
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+                grid[i, j] = 0;
+        }
+    }
+
     Node lowestCost(List<Node> nodes)
     {
         Node node = nodes.Aggregate(
@@ -147,7 +154,7 @@ public class AStarSearch
         return x >= 0 && x < grid.GetLength(0) &&
                y >= 0 && y < grid.GetLength(1) &&
                // walkable
-               grid[x, y] != 2;
+               grid[x, y] != 1;
     }
 
     List<Node> getNeighbours(int x, int y, int[] source, int[] target)
