@@ -37,13 +37,12 @@ public class snakeLogic : MonoBehaviour
         game = gameObject.transform;
         snake = game.GetChild(0);
         food = game. GetChild(1);
-        enemy = game.GetChild(4);
-        enemyHead = enemy.GetChild(0);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
         RespawnFood();
 
         enemyPathFinder = new AStarSearch(GenMapGrid());
-
+        enemy = null;
+        
     }
 
     // Update is called once per frame
@@ -76,14 +75,23 @@ public class snakeLogic : MonoBehaviour
         {
             ChangeDir("down");
         }
+        // spawn enemy - temporary
+        else if (Input.GetKeyDown("h"))
+            CreateEnemy();
+        // destroy enemy - temporary
+        else if (Input.GetKeyDown("j") && enemy != null)
+            Destroy(enemy.gameObject);
 
         time += Time.deltaTime;
         if (time >= gameSpeed)
         {
 
-            enemyPathFinder.ClearGrid();
-            GetGridObstacles();
-            MoveEnemy();
+            if (enemy != null)
+            {
+                enemyPathFinder.ClearGrid();
+                GetGridObstacles();
+                MoveEnemy();
+            }
 
             time = 0;
             MoveSnake();
@@ -92,6 +100,24 @@ public class snakeLogic : MonoBehaviour
 
         }
 
+    }
+
+    void CreateEnemy()
+    {
+        if (enemy != null) return;
+
+        var enemySnake = Instantiate(
+            Resources.Load("enemy")
+            ) as GameObject;
+
+        enemy = enemySnake.transform;
+        enemyHead = enemy.GetChild(0);
+
+        enemy.name = "enemy";
+
+        // TODO: add random but limtied position
+
+        enemy.parent = game;
     }
 
     void MoveEnemy()
@@ -269,14 +295,17 @@ public class snakeLogic : MonoBehaviour
             }
         }
 
-        // making sure the food doesn't spawn inside the enemy
-        for (int i = 0; i < enemy.childCount; i++)
+        if (enemy != null)
         {
-            Vector2 tailPos = enemy.GetChild(i).position;
-            if (tailPos == pos)
+            // making sure the food doesn't spawn inside the enemy
+            for (int i = 0; i < enemy.childCount; i++)
             {
-                RespawnFood();
-                return;
+                Vector2 tailPos = enemy.GetChild(i).position;
+                if (tailPos == pos)
+                {
+                    RespawnFood();
+                    return;
+                }
             }
         }
 
@@ -292,7 +321,7 @@ public class snakeLogic : MonoBehaviour
             GrowSnake(snake, "tail");
             RespawnFood();
         }
-        else if (food.position == enemyHead.position)
+        else if (enemy != null && food.position == enemyHead.position)
         {
             // limitting enemy snake length
             if (enemy.childCount < 10)
