@@ -106,7 +106,11 @@ public class snakeLogic : MonoBehaviour
     {
         if (enemy != null) return;
 
-        var enemySnake = Instantiate(
+        // generating random coordinates
+        float[] coord = GenEnemySpwnCoord();
+        if (coord == null) return;
+
+            var enemySnake = Instantiate(
             Resources.Load("enemy")
             ) as GameObject;
 
@@ -114,9 +118,6 @@ public class snakeLogic : MonoBehaviour
         enemyHead = enemy.GetChild(0);
 
         enemy.name = "enemy";
-
-        // generating random coordinates
-        float[] coord = GenEnemySpwnCoord();
 
         // setting position
         for (int i = 0; i < enemy.childCount; i++)
@@ -132,11 +133,18 @@ public class snakeLogic : MonoBehaviour
     }
 
     // generates position coordinates for the enemy
-    float[] GenEnemySpwnCoord()
+    float[] GenEnemySpwnCoord(int antistuck = 0)
     {
+        antistuck++;
+        // if during 200 attempts a valid coordinate
+        // is not found null is returned
+        if (antistuck > 200)
+            return null;
+        
         // generating random number - 0/1/2/3
         float choice = (int)Random.Range(0, 4);
 
+        float[] coord;
         float x;
         float y;
 
@@ -153,7 +161,54 @@ public class snakeLogic : MonoBehaviour
             x = (int)Random.Range(-mapX * 2, mapX * 2) / 2f;
         }
 
-        return new float[] { x, y };
+        // result
+        coord = new float[] { x, y };
+
+        // making sure the coordinate is valid
+        if (!ValidEnemySpwnPos(coord))
+            coord = GenEnemySpwnCoord(antistuck);
+            
+        return coord;
+    }
+
+    bool ValidEnemySpwnPos(float[] coord)
+    {
+
+        for (int i = 0; i < snake.childCount; i++)
+        {
+            var pos = snake.GetChild(i).position;
+
+            // making sure the enemy doesn't spawn
+            // inside the player snake
+            if (pos.x == coord[0] && pos.y == coord[1])
+                return false;
+        }
+
+        /*
+            making sure the snake's head
+            is not too close
+        */
+
+        var headPos = snake.GetChild(0).position;
+
+        // snake
+        float playerX = headPos.x + mapX;
+        float playerY = headPos.y + mapY;
+        
+        // enemy
+        float enemyX = coord[0] + mapX;
+        float enemyY = coord[1] + mapY;
+
+        float difX = Mathf.Abs(playerX - enemyX);
+        float difY = Mathf.Abs(playerY - enemyY);
+
+        // Making sure the enemy coordinate is at least 14 squares
+        // away both horizontally and vertically before spawning
+        if (difX < 7 && difY < 7 ||
+            Mathf.Abs(mapX * 2 - difX) < 7 && Mathf.Abs(mapY * 2 - difY) < 7)
+            return false;
+
+        return true;
     }
 
     void MoveEnemy()
