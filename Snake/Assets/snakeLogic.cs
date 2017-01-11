@@ -115,9 +115,45 @@ public class snakeLogic : MonoBehaviour
 
         enemy.name = "enemy";
 
-        // TODO: add random but limtied position
+        // generating random coordinates
+        float[] coord = GenEnemySpwnCoord();
+
+        // setting position
+        for (int i = 0; i < enemy.childCount; i++)
+        {
+            Transform child = enemy.GetChild(i);
+            Vector2 pos = child.position;
+            pos.x = coord[0];
+            pos.y = coord[1];
+            child.position = pos;
+        }
 
         enemy.parent = game;
+    }
+
+    // generates position coordinates for the enemy
+    float[] GenEnemySpwnCoord()
+    {
+        // generating random number - 0/1/2/3
+        float choice = (int)Random.Range(0, 4);
+
+        float x;
+        float y;
+
+        // right / left
+        if (choice == 0 || choice == 1)
+        {
+            x = choice == 0 ? mapX : -mapX;
+            y = (int)Random.Range(-mapY * 2, mapY * 2) / 2f;
+        }
+        // top / bottom 
+        else
+        {
+            y = choice == 2 ? mapY : -mapY;
+            x = (int)Random.Range(-mapX * 2, mapX * 2) / 2f;
+        }
+
+        return new float[] { x, y };
     }
 
     void MoveEnemy()
