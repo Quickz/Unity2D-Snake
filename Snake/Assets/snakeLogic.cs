@@ -21,8 +21,12 @@ public class snakeLogic : MonoBehaviour
     Transform game;
     Transform snake;
     Transform food;
+
     Transform enemy;
     Transform enemyHead;
+
+    // contains exit point of enemy snake
+    Transform enemyExit;
 
     TextMesh scoreObj;
     GameObject gameOverNote;
@@ -42,7 +46,8 @@ public class snakeLogic : MonoBehaviour
 
         enemyPathFinder = new AStarSearch(GenMapGrid());
         enemy = null;
-        
+        enemyExit = null;
+
     }
 
     // Update is called once per frame
@@ -79,8 +84,8 @@ public class snakeLogic : MonoBehaviour
         else if (Input.GetKeyDown("h"))
             CreateEnemy();
         // destroy enemy - temporary
-        else if (Input.GetKeyDown("j") && enemy != null)
-            Destroy(enemy.gameObject);
+        else if (Input.GetKeyDown("j") && enemy != null && enemyExit == null)
+            CreateEnemyExit();
 
         time += Time.deltaTime;
         if (time >= gameSpeed)
@@ -90,7 +95,17 @@ public class snakeLogic : MonoBehaviour
             {
                 enemyPathFinder.ClearGrid();
                 GetGridObstacles();
-                MoveEnemy();
+
+                if (enemyExit == null)
+                {
+                    MoveEnemy(food);
+                }
+                else
+                {
+                    MoveEnemy(enemyExit);
+                    CheckForExit();
+                }
+
             }
 
             time = 0;
@@ -102,6 +117,40 @@ public class snakeLogic : MonoBehaviour
 
     }
 
+    // checks if enemy has reached exit point
+    void CheckForExit()
+    {
+        if (enemyExit.position == enemyHead.position)
+        {
+            Destroy(enemy.gameObject);
+            Destroy(enemyExit.gameObject);
+        }
+    }
+
+    // creates an exit point for the enemy snake
+    void CreateEnemyExit()
+    {
+
+        // generates position
+        float[] coord = GenEnemySpwnCoord();
+        if (coord == null) return;
+
+        var exit = Instantiate(
+            Resources.Load("enemyExit")    
+        ) as GameObject;
+        
+        exit.name = "enemyExit";
+        enemyExit = exit.transform;
+
+        // setting the position
+        var pos = enemyExit.position;
+        pos.x = coord[0];
+        pos.y = coord[1];
+        enemyExit.position = pos;
+
+    }
+
+    // create a red enemy snake
     void CreateEnemy()
     {
         if (enemy != null) return;
@@ -111,7 +160,7 @@ public class snakeLogic : MonoBehaviour
         if (coord == null) return;
 
             var enemySnake = Instantiate(
-            Resources.Load("enemy")
+                Resources.Load("enemy")
             ) as GameObject;
 
         enemy = enemySnake.transform;
@@ -211,10 +260,10 @@ public class snakeLogic : MonoBehaviour
         return true;
     }
 
-    void MoveEnemy()
+    void MoveEnemy(Transform target)
     {
         var enemyPos = GetGridCoord(enemyHead.position);
-        var foodPos = GetGridCoord(food.position);
+        var foodPos = GetGridCoord(target.position);
 
         enemyPath = enemyPathFinder.run(enemyPos, foodPos);
 
