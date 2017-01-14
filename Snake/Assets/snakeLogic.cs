@@ -122,6 +122,16 @@ public class snakeLogic : MonoBehaviour
     {
         if (enemyExit.position == enemyHead.position)
         {
+
+            // making sure to get rid of the tail
+            // before getting rid of the enemy itself
+            if (enemy.childCount > 1)
+            {
+                var child = enemy.GetChild(enemy.childCount - 1);
+                Destroy(child.gameObject);
+                return;
+            }
+
             Destroy(enemy.gameObject);
             Destroy(enemyExit.gameObject);
         }
