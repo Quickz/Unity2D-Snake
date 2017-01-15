@@ -5,18 +5,21 @@ using System.Collections.Generic;
 
 public class snakeLogic : MonoBehaviour
 {
-    bool gameOver = false;
-    bool gamePaused = false;
+    bool gameOver;
+    bool gamePaused;
 
-    float time = 0;
-    float gameSpeed = 0.085f;
-    int score = 0;
+    float time;
+    float gameSpeed;
+    int score;
 
-    string direction = "right";
-    string lastDir = "right";
+    string direction;
+    string lastDir;
 
-    float mapX = 10;
-    float mapY = 5;
+    string enemyDir;
+    string lastEnemyDir;
+
+    float mapX;
+    float mapY;
 
     Transform game;
     Transform snake;
@@ -38,6 +41,19 @@ public class snakeLogic : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        gameOver = false;
+        gamePaused = false;
+
+        time = 0;
+        gameSpeed = 0.085f;
+        score = 0;
+
+        direction = "right";
+        lastDir = "right";
+
+        mapX = 10;
+        mapY = 5;
+
         game = gameObject.transform;
         snake = game.GetChild(0);
         food = game. GetChild(1);
@@ -117,6 +133,22 @@ public class snakeLogic : MonoBehaviour
 
     }
 
+    // saves current and last enemy direction
+    void SetEnemyDir(Vector2 oldPos, Vector2 currPos)
+    {
+        lastEnemyDir = enemyDir;
+
+        if (oldPos.x < currPos.x)
+            enemyDir = "right";
+        else if (oldPos.x > currPos.x)
+            enemyDir = "left";
+        else if (oldPos.y < currPos.y)
+            enemyDir = "up";
+        else if (oldPos.y > currPos.y)
+            enemyDir = "down";
+
+    }
+
     // checks if enemy has reached exit point
     void CheckForExit()
     {
@@ -187,6 +219,10 @@ public class snakeLogic : MonoBehaviour
             pos.y = coord[1];
             child.position = pos;
         }
+
+        // resetting direction
+        enemyDir = "";
+        lastEnemyDir = "";
 
         enemy.parent = game;
     }
@@ -280,7 +316,13 @@ public class snakeLogic : MonoBehaviour
         if (enemyPath != null)
         {
             MoveTail(enemy);
+
+            var oldPos = enemyHead.position;
             SetPosFromGrid(enemyPath[1], enemyHead);
+
+            SetEnemyDir(oldPos, enemyHead.position);
+            BendTail(enemy, lastEnemyDir, enemyDir);
+
         }
     }
 
@@ -361,7 +403,6 @@ public class snakeLogic : MonoBehaviour
     // moves the whole snake
     void MoveSnake()
     {
-        lastDir = direction;
         switch (direction)
         {
             case "right":
@@ -381,6 +422,40 @@ public class snakeLogic : MonoBehaviour
                 ChangeHeadPos(0, -0.5f);
                 break;
         }
+
+        BendTail(snake, lastDir, direction);
+        lastDir = direction;
+
+    }
+
+    // bends tail piece depending
+    // last and current direction
+    void BendTail(Transform snake, string lastDir, string currDir)
+    {
+        int sprNum = 0;
+
+        if (lastDir == "up" && currDir == "right" ||
+            lastDir == "left" && currDir == "down")
+            sprNum = 1;
+        else if (lastDir == "right" && currDir == "down" ||
+                 lastDir == "up" && currDir == "left")
+            sprNum = 2;
+        else if (lastDir == "down" && currDir == "left" ||
+                 lastDir == "right" && currDir == "up")
+            sprNum = 3;
+        else if (lastDir == "left" && currDir == "up" ||
+                 lastDir == "down" && currDir == "right")
+            sprNum = 4;
+        else
+            return;
+
+        SetSpr(snake.GetChild(1), "square_turn_" + sprNum);
+    }
+
+    void SetSpr(Transform obj, string spritePath)
+    {
+        var spr = obj.GetComponent<SpriteRenderer>();
+        spr.sprite = Resources.Load<Sprite>(spritePath);
     }
 
     // moves each tail piece based on head position
@@ -390,9 +465,14 @@ public class snakeLogic : MonoBehaviour
 
         for (int i = tailLength; i > 0; i--)
         {
-            var frontPiece = snake.GetChild(i - 1).position;
+            var frontPiece = snake.GetChild(i - 1);
             var backPiece = snake.GetChild(i);
-            ChangePos(backPiece, frontPiece.x, frontPiece.y);
+
+            backPiece.position = frontPiece.position;
+
+            if (i != tailLength)
+                ChangeSpr(backPiece, frontPiece);
+
         }
 
     }
@@ -421,6 +501,14 @@ public class snakeLogic : MonoBehaviour
         pos.x = x;
         pos.y = y;
         obj.position = pos;
+    }
+
+    // changes the sprites of two given pieces
+    void ChangeSpr(Transform back, Transform front)
+    {
+        var spr1 = back.GetComponent<SpriteRenderer>();
+        var spr2 = front.GetComponent<SpriteRenderer>();
+        spr1.sprite = spr2.sprite;
     }
 
     // moves the food to a random position
@@ -551,6 +639,9 @@ public class snakeLogic : MonoBehaviour
 
         // resetting score
         UpScore(-score);
+
+        // preventing last tail piece staying bent
+        SetSpr(snake.GetChild(2), "square");
 
         SetHeadColor(Color.white);
         Destroy(gameOverNote);
