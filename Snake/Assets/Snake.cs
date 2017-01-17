@@ -10,7 +10,7 @@ public class Snake
     public float mapX;
     public float mapY;
 
-    public GameObject snake;
+    public Transform snake;
     public Transform head;
 
 	public Snake(float x, float y)
@@ -44,18 +44,18 @@ public class Snake
         else
             return;
 
-        SetSpr(snake.transform.GetChild(1), "square_turn_" + sprNum);
+        SetSpr(snake.GetChild(1), "square_turn_" + sprNum);
     }
 
     // moves each tail piece based on head position
     public void MoveTail()
     {
-        int tailLength = snake.transform.childCount - 1;
+        int tailLength = snake.childCount - 1;
 
         for (int i = tailLength; i > 0; i--)
         {
-            var frontPiece = snake.transform.GetChild(i - 1);
-            var backPiece = snake.transform.GetChild(i);
+            var frontPiece = snake.GetChild(i - 1);
+            var backPiece = snake.GetChild(i);
 
             backPiece.position = frontPiece.position;
 

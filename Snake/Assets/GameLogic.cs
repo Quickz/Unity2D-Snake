@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class snakeLogic : MonoBehaviour
+public class GameLogic : MonoBehaviour
 {
     Player player;
     Enemy enemy;
@@ -42,7 +42,7 @@ public class snakeLogic : MonoBehaviour
         game = gameObject.transform;
         
         snake = game.GetChild(0);
-        player = new Player(snake.gameObject, mapX, mapY);
+        player = new Player(snake, mapX, mapY);
 
         food = game. GetChild(1);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();

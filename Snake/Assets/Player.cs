@@ -4,7 +4,7 @@ using System.Collections;
 public class Player : Snake
 {
 
-    public Player(GameObject snake, float x, float y)
+    public Player(Transform snake, float x, float y)
         : base(x, y)
     {
         this.snake = snake;

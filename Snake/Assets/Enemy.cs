@@ -19,8 +19,7 @@ public class Enemy : Snake
         this.game = game;
         player = game.GetChild(0);
 
-        snake = CreateEnemy(game);
-        head = snake.transform.GetChild(0);
+        CreateEnemy();
 
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
@@ -33,21 +32,21 @@ public class Enemy : Snake
     // checks if enemy has reached exit point
     public bool CheckForExit()
     {
-        if (exit.position == snake.transform.GetChild(0).position)
+        if (exit.position == head.position)
         {
 
             // making sure to get rid of the tail
             // before getting rid of the enemy itself
-            if (snake.transform.childCount > 1)
+            if (snake.childCount > 1)
             {
-                var child = snake.transform.GetChild(
-                        snake.transform.childCount - 1
+                var child = snake.GetChild(
+                        snake.childCount - 1
                     );
                 Object.Destroy(child.gameObject);
                 return false;
             }
 
-            Object.Destroy(snake);
+            Object.Destroy(snake.gameObject);
             Object.Destroy(exit.gameObject);
             return true;
         }
@@ -55,23 +54,24 @@ public class Enemy : Snake
     }
 
     // creates a red enemy snake
-    public GameObject CreateEnemy(Transform game)
+    public void CreateEnemy()
     {
 
         // generating random coordinates
         float[] coord = GenEnemySpwnCoord();   
 
-        snake = Object.Instantiate(
+        var snakeObj = Object.Instantiate(
             Resources.Load("enemy")
         ) as GameObject;
 
+        snake = snakeObj.transform;
 
         snake.name = "enemy";
 
         // setting position
-        for (int i = 0; i < snake.transform.childCount; i++)
+        for (int i = 0; i < snake.childCount; i++)
         {
-            Transform child = snake.transform.GetChild(i);
+            Transform child = snake.GetChild(i);
             Vector2 pos = child.position;
             pos.x = coord[0];
             pos.y = coord[1];
@@ -82,8 +82,8 @@ public class Enemy : Snake
         currDir = "";
         lastDir = "";
 
-        snake.transform.parent = game;
-        return snake;
+        snake.parent = game;
+        head = snake.GetChild(0);
 
     }
 
@@ -207,7 +207,7 @@ public class Enemy : Snake
 
     public void MoveSnake(Transform target)
     {
-        var enemyPos = GetGridCoord(snake.transform.GetChild(0).position);
+        var enemyPos = GetGridCoord(head.position);
         var foodPos = GetGridCoord(target.position);
 
         path = pathFinder.run(enemyPos, foodPos);
@@ -216,10 +216,10 @@ public class Enemy : Snake
         {
             MoveTail();
 
-            var oldPos = snake.transform.GetChild(0).position;
-            SetPosFromGrid(path[1], snake.transform.GetChild(0));
+            var oldPos = head.position;
+            SetPosFromGrid(path[1], head);
 
-            SetEnemyDir(oldPos, snake.transform.GetChild(0).position);
+            SetEnemyDir(oldPos, head.position);
             BendTail();
 
         }
@@ -236,9 +236,9 @@ public class Enemy : Snake
         }
 
         // enemy tail
-        for (int i = 1; i < snake.transform.childCount; i++)
+        for (int i = 1; i < snake.childCount; i++)
         {
-            int[] pos = GetGridCoord(snake.transform.GetChild(i).position);
+            int[] pos = GetGridCoord(snake.GetChild(i).position);
             pathFinder.grid[pos[0], pos[1]] = 1;
         }
 
@@ -278,4 +278,3 @@ public class Enemy : Snake
 
 
 }//end
-
