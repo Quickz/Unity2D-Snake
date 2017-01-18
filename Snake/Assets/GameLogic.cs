@@ -102,7 +102,6 @@ public class GameLogic : MonoBehaviour
 
             time = 0;
             player.MoveSnake();
-            if (CheckCollision()) return;
 
         }
 
@@ -166,8 +165,8 @@ public class GameLogic : MonoBehaviour
             ) as GameObject;
 
         // changing a few properties
-        tail.name = "tail" + (snake.childCount - 1);
-        tail.transform.position = snake.GetChild(0).position;
+        tail.name = "tail";
+        tail.transform.position = snake.GetChild(1).position;
         tail.transform.parent = snake;
     }
 
@@ -178,22 +177,11 @@ public class GameLogic : MonoBehaviour
     }
 
     // checks if the head is inside the tail
-    bool CheckCollision()
+    public void GameOver()
     {
-        var head = snake.GetChild(0);
-        for (int i = 1; i < snake.childCount; i++)
-        {
-            Vector2 tailPos = snake.GetChild(i).position;
-            if ((Vector2)head.position == tailPos)
-            {
-                GameOverNotification();
-
-                SetHeadColor(Color.red);
-                gameOver = true;
-                return true;
-            }
-        }
-        return false;
+        GameOverNotification();
+        SetHeadColor(Color.red);
+        gameOver = true;
     }
 
     void SetHeadColor(Color color)

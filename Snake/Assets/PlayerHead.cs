@@ -29,6 +29,10 @@ public class PlayerHead : MonoBehaviour
             gameLogic.RespawnFood();
 
         }
+        else if (col.name == "tail")
+        {
+            gameLogic.GameOver();
+        }
     }
 
 
