@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class GameLogic : MonoBehaviour
 {
     Player player;
-    Enemy enemy;
+    public Enemy enemy;
 
     bool gameOver;
     bool gamePaused;
@@ -103,7 +103,6 @@ public class GameLogic : MonoBehaviour
             time = 0;
             player.MoveSnake();
             if (CheckCollision()) return;
-            CheckForFood();
 
         }
 
@@ -119,7 +118,7 @@ public class GameLogic : MonoBehaviour
     }
 
     // moves the food to a random position
-    void RespawnFood()
+    public void RespawnFood()
     {
 
         Vector2 pos = food.position;
@@ -158,26 +157,8 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    void CheckForFood()
-    {
-        if (food.position == snake.GetChild(0).position)
-        {
-            UpScore();
-            GrowSnake(snake, "tail");
-            RespawnFood();
-        }
-        else if (enemy != null && food.position == enemy.head.position)
-        {
-            // limiting enemy snake length
-            if (enemy.snake.transform.childCount < 10)
-                GrowSnake(enemy.snake.transform, "enemyTail");
-            RespawnFood();
-        }
-
-    }
-
     // adds one square to a tail
-    void GrowSnake(Transform snake, string resource)
+    public void GrowSnake(Transform snake, string resource)
     {
         // generating the piece
         var tail = Instantiate(
@@ -190,7 +171,7 @@ public class GameLogic : MonoBehaviour
         tail.transform.parent = snake;
     }
 
-    void UpScore(int addition = 10)
+    public void UpScore(int addition = 10)
     {
         score += addition;
         scoreObj.text = "Score: " + score;
