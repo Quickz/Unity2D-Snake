@@ -1,62 +1,73 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : Snake
+public class Player : MonoBehaviour
 {
 
-    public Player(Transform snake, float x, float y)
-        : base(x, y)
+    public Snake snakeLogic;
+    GameLogic gameLogic;
+    GameObject game;
+    Transform snake;
+
+    void Start()
     {
-        this.snake = snake;
-        head = snake.transform.GetChild(0);
+        game = GameObject.FindWithTag("Game");
+        snake = game.transform.GetChild(0);
+        snakeLogic = gameObject.GetComponent<Snake>();
+        gameLogic = game.GetComponent<GameLogic>();
+
+        snakeLogic.currDir = "right";
+        snakeLogic.lastDir = "right";
+
+    }
+
+    void Update()
+    {
+
+        if (gameLogic.stepAvailable)
+            MoveSnake();
+
     }
 
     public void CheckForInput()
     {
         if (Input.GetKeyDown("right") || Input.GetKeyDown("d"))
-        {
             ChangeDir("right");
-        }
         else if (Input.GetKeyDown("left") || Input.GetKeyDown("a"))
-        {
             ChangeDir("left");
-        }
         else if (Input.GetKeyDown("up") || Input.GetKeyDown("w"))
-        {
             ChangeDir("up");
-        }
         else if (Input.GetKeyDown("down") || Input.GetKeyDown("s"))
-        {
             ChangeDir("down");
-        }
 
     }
 
     // moves the whole snake
     public void MoveSnake()
     {
-        switch (currDir)
+
+        switch (snakeLogic.currDir)
         {
             case "right":
-                MoveTail();
+                snakeLogic.MoveTail();
                 ChangeHeadPos(0.5f, 0);
                 break;
             case "left":
-                MoveTail();
+                snakeLogic.MoveTail();
                 ChangeHeadPos(-0.5f, 0);
                 break;
             case "up":
-                MoveTail();
+                snakeLogic.MoveTail();
                 ChangeHeadPos(0, 0.5f);
                 break;
             case "down":
-                MoveTail();
+                snakeLogic.MoveTail();
                 ChangeHeadPos(0, -0.5f);
                 break;
         }
 
-        BendTail();
-        lastDir = currDir;
+        snakeLogic.BendTail();
+        snakeLogic.lastDir = snakeLogic.currDir;
 
     }
 
@@ -66,20 +77,20 @@ public class Player : Snake
         switch (dir)
         {
             case "right":
-                if (lastDir != "left")
-                    currDir = "right";
+                if (snakeLogic.lastDir != "left")
+                    snakeLogic.currDir = "right";
                 break;
             case "left":
-                if (lastDir != "right")
-                    currDir = "left";
+                if (snakeLogic.lastDir != "right")
+                    snakeLogic.currDir = "left";
                 break;
             case "up":
-                if (lastDir != "down")
-                    currDir = "up";
+                if (snakeLogic.lastDir != "down")
+                    snakeLogic.currDir = "up";
                 break;
             case "down":
-                if (lastDir != "up")
-                    currDir = "down";
+                if (snakeLogic.lastDir != "up")
+                    snakeLogic.currDir = "down";
                 break;
         }
     }
@@ -94,8 +105,10 @@ public class Player : Snake
         pos.y += (float)y;
 
         // checking for boundaries
-        pos.x = pos.x > mapX ? -mapX : pos.x < -mapX ? mapX : pos.x;
-        pos.y = pos.y > mapY ? -mapY : pos.y < -mapY ? mapY : pos.y;
+        pos.x = pos.x > gameLogic.mapX ? -gameLogic.mapX :
+                pos.x < -gameLogic.mapX ? gameLogic.mapX : pos.x;
+        pos.y = pos.y > gameLogic.mapY ? -gameLogic.mapY :
+                pos.y < -gameLogic.mapY ? gameLogic.mapY : pos.y;
 
         head.transform.position = pos;
 

@@ -6,21 +6,25 @@ using System.Collections.Generic;
 public class GameLogic : MonoBehaviour
 {
     Player player;
-    public Enemy enemy;
+    Enemy enemy;
 
     bool gameOver;
     bool gamePaused;
 
-    float time;
-    float gameSpeed;
+    // tells the game that a one
+    // gamespeed cycle has passed
+    public bool stepAvailable;
+
+    public float time;
+    public float gameSpeed;
     int score;
 
-    float mapX;
-    float mapY;
+    public float mapX;
+    public float mapY;
 
     Transform game;
     Transform snake;
-    Transform food;
+    public Transform food;
 
     TextMesh scoreObj;
     GameObject gameOverNote;
@@ -32,17 +36,18 @@ public class GameLogic : MonoBehaviour
         gameOver = false;
         gamePaused = false;
 
-        time = 0;
         gameSpeed = 0.085f;
+        stepAvailable = false;
+        time = 0;
         score = 0;
 
         mapX = 10;
         mapY = 5;
 
         game = gameObject.transform;
-        
         snake = game.GetChild(0);
-        player = new Player(snake, mapX, mapY);
+
+        player = snake.GetComponent<Player>();
 
         food = game. GetChild(1);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
@@ -55,6 +60,9 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        stepAvailable = false;
+
         if (Input.GetKeyDown("r"))
             RestartGame();
         if (gameOver)
@@ -68,10 +76,10 @@ public class GameLogic : MonoBehaviour
             return;
         else
             player.CheckForInput();
-
+        
         // spawn enemy - temporary
         if (Input.GetKeyDown("h") && enemy == null)
-            enemy = new Enemy(game, mapX, mapY);
+            CreateEnemy();
         // destroy enemy - temporary
         else if (Input.GetKeyDown("j") && enemy != null && enemy.exit == null)
             enemy.CreateEnemyExit();
@@ -79,31 +87,21 @@ public class GameLogic : MonoBehaviour
         time += Time.deltaTime;
         if (time >= gameSpeed)
         {
-
-            if (enemy != null)
-            {
-                enemy.pathFinder.ClearGrid();
-                enemy.GetGridObstacles();
-
-                if (enemy.exit == null)
-                {
-                    enemy.MoveSnake(food);
-                }
-                else
-                {
-                    enemy.MoveSnake(enemy.exit);
-
-                    if (enemy.CheckForExit())
-                        enemy = null;
-
-                }
-
-            }
-
             time = 0;
-            player.MoveSnake();
-
+            stepAvailable = true;
         }
+
+    }
+
+    // creates a red enemy snake
+    public void CreateEnemy()
+    {
+        var enemyObj = Object.Instantiate(
+            Resources.Load("enemy")
+        ) as GameObject;
+
+        enemyObj.transform.parent = game.transform;
+        enemy = enemyObj.GetComponent<Enemy>();
 
     }
 
@@ -141,9 +139,9 @@ public class GameLogic : MonoBehaviour
         if (enemy != null)
         {
             // making sure the food doesn't spawn inside the enemy
-            for (int i = 0; i < enemy.snake.transform.childCount; i++)
+            for (int i = 0; i < enemy.snake.childCount; i++)
             {
-                Vector2 tailPos = enemy.snake.transform.GetChild(i).position;
+                Vector2 tailPos = enemy.snake.GetChild(i).position;
                 if (tailPos == pos)
                 {
                     RespawnFood();
@@ -182,6 +180,11 @@ public class GameLogic : MonoBehaviour
         GameOverNotification();
         SetHeadColor(Color.red);
         gameOver = true;
+
+        // resetting time to prevent permanent 0 value
+        // which can cause objects to move after game's over
+        time = 0;
+
     }
 
     void SetHeadColor(Color color)
@@ -210,14 +213,14 @@ public class GameLogic : MonoBehaviour
             ChangePos(snake.GetChild(i), -i / 2f, 0);
 
         // resetting direction
-        player.currDir = "right";
-        player.lastDir = "right";
+        player.snakeLogic.currDir = "right";
+        player.snakeLogic.lastDir = "right";
 
         // resetting score
         UpScore(-score);
 
         // preventing last tail piece staying bent
-        player.SetSpr(snake.GetChild(2), "square");
+        player.snakeLogic.SetSpr(snake.GetChild(2), "square");
 
         SetHeadColor(Color.white);
         Destroy(gameOverNote);

@@ -30,9 +30,8 @@ public class PlayerHead : MonoBehaviour
 
         }
         else if (col.name == "tail")
-        {
             gameLogic.GameOver();
-        }
+
     }
 
 

@@ -19,6 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4814780878730406}
+  - component: {fileID: 114316824180192914}
+  - component: {fileID: 114381571034053188}
   m_Layer: 0
   m_Name: enemy
   m_TagString: Untagged
@@ -166,6 +168,35 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.2}
+--- !u!114 &114316824180192914
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1200867142331188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e2bd149c2f4964ba63b54cfdafc9b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currDir: 
+  lastDir: 
+  snake: {fileID: 0}
+  head: {fileID: 0}
+--- !u!114 &114381571034053188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1200867142331188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c5ea2dc835eb244b65977f3a74e3bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exit: {fileID: 0}
+  snakeLogic: {fileID: 0}
+  snake: {fileID: 0}
 --- !u!114 &114776060338974652
 MonoBehaviour:
   m_ObjectHideFlags: 1

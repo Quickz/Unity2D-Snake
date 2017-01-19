@@ -16,7 +16,7 @@ public class EnemyHead : MonoBehaviour
     {
         game = GameObject.FindWithTag("Game");
         gameLogic = game.GetComponent<GameLogic>();
-        enemy = gameLogic.enemy;
+        enemy = gameObject.transform.parent.GetComponent<Enemy>();
 
     }
 

@@ -198,6 +198,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 181289789}
+  - component: {fileID: 181289791}
+  - component: {fileID: 181289790}
   m_Layer: 0
   m_Name: snake
   m_TagString: Untagged
@@ -221,6 +223,33 @@ Transform:
   m_Father: {fileID: 942826017}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &181289790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 181289788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9234f64646d4214284928e39600af1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snakeLogic: {fileID: 0}
+--- !u!114 &181289791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 181289788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e2bd149c2f4964ba63b54cfdafc9b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currDir: 
+  lastDir: 
+  snake: {fileID: 0}
+  head: {fileID: 0}
 --- !u!1 &860313045
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,6 +358,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e154d25f517aa14cab15ee899b0468b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapX: 0
+  mapY: 0
 --- !u!1 &972622157
 GameObject:
   m_ObjectHideFlags: 0

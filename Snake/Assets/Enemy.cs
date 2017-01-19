@@ -2,24 +2,41 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Enemy : Snake
+public class Enemy : MonoBehaviour
 {
 
     public AStarSearch pathFinder;
     public List<int[]> path;
     public Transform exit;
 
-    Transform game;
+    GameObject game;
     Transform player;
 
-    public Enemy(Transform game, float x, float y)
-        : base(x, y)
+    public Snake snakeLogic;
+    GameLogic gameLogic;
+    
+    public Transform snake;
+    Transform head;
+
+    float mapX;
+    float mapY;
+
+    void Start()
     {
+        game = GameObject.FindWithTag("Game");
+        snakeLogic = gameObject.GetComponent<Snake>();
+        gameLogic = game.GetComponent<GameLogic>();
 
-        this.game = game;
-        player = game.GetChild(0);
+        snake = gameObject.transform;
+        head = snake.GetChild(0);
 
-        CreateEnemy();
+        player = game.transform.GetChild(0);
+
+        mapX = gameLogic.mapX;
+        mapY = gameLogic.mapY;
+
+        snake.name = "enemy";
+        SetRandomPos();
 
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
@@ -27,6 +44,27 @@ public class Enemy : Snake
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
 
+    }
+
+    void Update()
+    {
+        if (gameLogic.stepAvailable)
+        {
+            pathFinder.ClearGrid();
+            GetGridObstacles();
+
+            if (exit == null)
+                MoveSnake(gameLogic.food);
+            else
+            {
+                MoveSnake(exit);
+
+                if (CheckForExit())
+                    Destroy(gameObject);
+
+            }
+
+        }
     }
 
     // checks if enemy has reached exit point
@@ -54,19 +92,11 @@ public class Enemy : Snake
     }
 
     // creates a red enemy snake
-    public void CreateEnemy()
+    public void SetRandomPos()
     {
 
         // generating random coordinates
         float[] coord = GenEnemySpwnCoord();   
-
-        var snakeObj = Object.Instantiate(
-            Resources.Load("enemy")
-        ) as GameObject;
-
-        snake = snakeObj.transform;
-
-        snake.name = "enemy";
 
         // setting position
         for (int i = 0; i < snake.childCount; i++)
@@ -77,13 +107,6 @@ public class Enemy : Snake
             pos.y = coord[1];
             child.position = pos;
         }
-
-        // resetting direction
-        currDir = "";
-        lastDir = "";
-
-        snake.parent = game;
-        head = snake.GetChild(0);
 
     }
 
@@ -169,16 +192,16 @@ public class Enemy : Snake
     // saves current and last enemy direction
     void SetEnemyDir(Vector2 oldPos, Vector2 currPos)
     {
-        lastDir = currDir;
+        snakeLogic.lastDir = snakeLogic.currDir;
 
         if (oldPos.x < currPos.x)
-            currDir = "right";
+            snakeLogic.currDir = "right";
         else if (oldPos.x > currPos.x)
-            currDir = "left";
+            snakeLogic.currDir = "left";
         else if (oldPos.y < currPos.y)
-            currDir = "up";
+            snakeLogic.currDir = "up";
         else if (oldPos.y > currPos.y)
-            currDir = "down";
+            snakeLogic.currDir = "down";
 
     }
 
@@ -214,13 +237,13 @@ public class Enemy : Snake
 
         if (path != null)
         {
-            MoveTail();
+            snakeLogic.MoveTail();
 
             var oldPos = head.position;
             SetPosFromGrid(path[1], head);
 
             SetEnemyDir(oldPos, head.position);
-            BendTail();
+            snakeLogic.BendTail();
 
         }
     }

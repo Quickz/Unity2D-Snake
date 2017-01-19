@@ -1,25 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Snake
+public class Snake : MonoBehaviour
 {
 
     public string currDir;
     public string lastDir;
 
-    public float mapX;
-    public float mapY;
-
     public Transform snake;
     public Transform head;
 
-	public Snake(float x, float y)
+	void Start()
     {
-        mapX = x;
-        mapY = y;
 
-        currDir = "right";
-        lastDir = "right";
+        snake = gameObject.transform;
+        head = snake.GetChild(0);
 
     }
 
