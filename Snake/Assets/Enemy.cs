@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     GameObject game;
     Transform player;
+    Transform target;
 
     public Snake snakeLogic;
     GameLogic gameLogic;
@@ -41,6 +42,8 @@ public class Enemy : MonoBehaviour
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
 
+        target = gameLogic.food;
+
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
 
@@ -54,7 +57,18 @@ public class Enemy : MonoBehaviour
             GetGridObstacles();
 
             if (exit == null)
-                MoveSnake(gameLogic.food);
+            {
+                
+                // checking if there's a high food available
+                // if not then just go for next best thing
+                var highFood = GameObject.Find("highQualityFood");
+                if (highFood != null)
+                    target = highFood.transform;
+                else
+                    target = gameLogic.food;
+
+                MoveSnake(target);
+            }
             else
             {
                 MoveSnake(exit);
