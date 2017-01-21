@@ -19,6 +19,10 @@ public class highQualityFood : MonoBehaviour
     int steps;
     int stepDir;
 
+    // will food move horizontally
+    // or will it move vertically
+    int axis;
+
 	// Use this for initialization
 	void Start()
     {
@@ -37,7 +41,9 @@ public class highQualityFood : MonoBehaviour
         // moving the food to a random position
         gameLogic.RespawnFood(food);
 
-	}
+        axis = Random.Range(0, 2);
+
+    }
 	
 	// Update is called once per frame
 	void Update()
@@ -45,7 +51,11 @@ public class highQualityFood : MonoBehaviour
 
         if (stepAvailable())
         {
-            Move(0.5f * stepDir, 0);
+            
+            if (axis == 1)
+                Move(0.5f * stepDir, 0);
+            else
+                Move(0, 0.5f * stepDir);
 
         }
 
@@ -56,6 +66,8 @@ public class highQualityFood : MonoBehaviour
         float newX = food.position.x + x;
         float newY = food.position.y + y;
 
+        steps += stepDir;
+
         // checking if it's going outside the bounds
         if (NewCoordOutOfBounds(newX, newY))
         {
@@ -65,7 +77,6 @@ public class highQualityFood : MonoBehaviour
         }
 
         gameLogic.ChangePos(food, newX, newY);
-        steps += stepDir;
 
         // changing direction of movement
         if (steps > 5 || steps < 0)
@@ -80,7 +91,7 @@ public class highQualityFood : MonoBehaviour
     }
 
     // tells the food if it's allowed to move
-    // needed to be able to move every 2 game steps
+    // needed to be able to move every 3 game steps
     // instead of 1
     bool stepAvailable()
     {
