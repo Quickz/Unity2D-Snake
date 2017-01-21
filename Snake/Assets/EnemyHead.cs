@@ -27,7 +27,7 @@ public class EnemyHead : MonoBehaviour
             // limiting enemy snake length
             if (enemy.snake.transform.childCount < 10)
                 gameLogic.GrowSnake(enemy.snake.transform, "enemyTail");
-            gameLogic.RespawnFood();
+            gameLogic.RespawnFood(gameLogic.food);
         }
     }
 

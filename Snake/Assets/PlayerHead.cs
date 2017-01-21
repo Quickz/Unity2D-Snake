@@ -26,8 +26,13 @@ public class PlayerHead : MonoBehaviour
         {
             gameLogic.UpScore();
             gameLogic.GrowSnake(snake, "tail");
-            gameLogic.RespawnFood();
+            gameLogic.RespawnFood(gameLogic.food);
 
+        }
+        else if (col.name == "highQualityFood")
+        {
+            gameLogic.UpScore();
+            Destroy(col.gameObject);
         }
         else if (col.name == "tail")
             gameLogic.GameOver();

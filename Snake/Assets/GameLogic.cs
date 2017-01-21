@@ -51,7 +51,7 @@ public class GameLogic : MonoBehaviour
 
         food = game. GetChild(1);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
-        RespawnFood();
+        RespawnFood(food);
 
         enemy = null;
 
@@ -76,13 +76,15 @@ public class GameLogic : MonoBehaviour
             return;
         else
             player.CheckForInput();
-        
+
         // spawn enemy - temporary
         if (Input.GetKeyDown("h") && enemy == null)
             CreateEnemy();
         // destroy enemy - temporary
         else if (Input.GetKeyDown("j") && enemy != null && enemy.exit == null)
             enemy.CreateEnemyExit();
+        else if (Input.GetKeyDown("f"))
+            CreateHighFood();
 
         time += Time.deltaTime;
         if (time >= gameSpeed)
@@ -90,6 +92,17 @@ public class GameLogic : MonoBehaviour
             time = 0;
             stepAvailable = true;
         }
+
+    }
+
+    void CreateHighFood()
+    {
+        var food = Object.Instantiate(
+            Resources.Load("highQualityFood")
+        ) as GameObject;
+
+        food.transform.parent = game.transform;
+        food.name = "highQualityFood";
 
     }
 
@@ -106,7 +119,7 @@ public class GameLogic : MonoBehaviour
     }
 
     // changes position of a specified transform
-    void ChangePos(Transform obj, float x = 0, float y = 0)
+    public void ChangePos(Transform obj, float x = 0, float y = 0)
     {
         Vector2 pos = obj.position;
         pos.x = x;
@@ -115,7 +128,7 @@ public class GameLogic : MonoBehaviour
     }
 
     // moves the food to a random position
-    public void RespawnFood()
+    public void RespawnFood(Transform food)
     {
 
         Vector2 pos = food.position;
@@ -131,7 +144,7 @@ public class GameLogic : MonoBehaviour
             Vector2 tailPos = snake.GetChild(i).position;
             if (tailPos == pos)
             {
-                RespawnFood();
+                RespawnFood(food);
                 return;
             }
         }
@@ -144,7 +157,7 @@ public class GameLogic : MonoBehaviour
                 Vector2 tailPos = enemy.snake.GetChild(i).position;
                 if (tailPos == pos)
                 {
-                    RespawnFood();
+                    RespawnFood(food);
                     return;
                 }
             }
@@ -181,8 +194,6 @@ public class GameLogic : MonoBehaviour
         SetHeadColor(Color.red);
         gameOver = true;
 
-        // resetting time to prevent permanent 0 value
-        // which can cause objects to move after game's over
         time = 0;
 
     }
@@ -226,7 +237,7 @@ public class GameLogic : MonoBehaviour
         Destroy(gameOverNote);
         gameOver = false;
         ResumeGame();
-        RespawnFood();
+        RespawnFood(food);
 
     }
     
