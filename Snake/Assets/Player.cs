@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     public Snake snakeLogic;
     GameLogic gameLogic;
     GameObject game;
-    Transform snake;
+    public Transform snake;
 
     void Start()
     {

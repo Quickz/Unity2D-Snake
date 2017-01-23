@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour
 {
-    Player player;
-    Enemy enemy;
+    public Player player;
+    public Enemy enemy;
 
     bool gameOver;
     bool gamePaused;
@@ -54,7 +54,7 @@ public class GameLogic : MonoBehaviour
         RespawnFood(food);
 
         enemy = null;
-
+        
     }
 
     // Update is called once per frame

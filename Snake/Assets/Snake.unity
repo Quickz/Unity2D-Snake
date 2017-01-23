@@ -235,6 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakeLogic: {fileID: 0}
+  snake: {fileID: 0}
 --- !u!114 &181289791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,6 +401,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e154d25f517aa14cab15ee899b0468b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  enemy: {fileID: 0}
   stepAvailable: 0
   time: 0
   gameSpeed: 0

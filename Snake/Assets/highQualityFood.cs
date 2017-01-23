@@ -20,8 +20,10 @@ public class highQualityFood : MonoBehaviour
     int stepDir;
 
     // will food move horizontally
-    // or will it move vertically
-    int axis;
+    // or will it move vertically<---------------
+    int movX;
+    int movY;
+
 
 	// Use this for initialization
 	void Start()
@@ -41,7 +43,7 @@ public class highQualityFood : MonoBehaviour
         // moving the food to a random position
         gameLogic.RespawnFood(food);
 
-        axis = Random.Range(0, 2);
+        SetMovementAxis();
 
     }
 	
@@ -51,15 +53,78 @@ public class highQualityFood : MonoBehaviour
 
         if (stepAvailable())
         {
-            
-            if (axis == 1)
-                Move(0.5f * stepDir, 0);
-            else
-                Move(0, 0.5f * stepDir);
+
+            MoveFood();
 
         }
 
 	}
+
+    void SetMovementAxis()
+    {
+        int axis = Random.Range(0, 2);
+        movX = axis == 1 ? 1 : 0;
+        movY = axis != 1 ? 1 : 0;
+    }
+    //void OnTriggerEnter2D(Collider2D col)
+    //{
+    //    if (col.name == "tail")
+    //    {
+    //        Debug.Log("asdasds!!!");
+    //        stepDir = -stepDir;
+    //        MoveFood();
+
+    //    }
+    //}
+
+    bool CoordIsFree(float x, float y)
+    {
+        float posX = food.position.x + x;
+        float posY = food.position.y + y;
+
+        var player = gameLogic.player.snake;
+
+        bool playerFree = CheckSnakeCoord(player, posX, posY);
+        bool enemyFree = true;
+
+        if (gameLogic.enemy != null)
+        {
+            var enemy = gameLogic.enemy.snake;
+            enemyFree = CheckSnakeCoord(enemy, posX, posY);
+        }
+
+        return playerFree && enemyFree;
+    }
+
+    // checks if coordinate is for for the specified snake
+    bool CheckSnakeCoord(Transform snake, float x, float y)
+    {
+        for (int i = 0; i < snake.childCount; i++)
+        {
+            var pos = snake.GetChild(i).position;
+            if (pos.x == x && pos.y == y)
+                return false;
+        }
+        return true;
+    }
+
+    void MoveFood()
+    {
+        float x = 0.5f * stepDir * movX;
+        float y = 0.5f * stepDir * movY;
+
+        // checking for obstacles
+        if (CoordIsFree(x, y))
+            Move(x, y);
+        // trying to go to opposite direction
+        else if (steps <= 5 && steps >= 0 && CoordIsFree(-x, -y))
+        {
+            stepDir = -stepDir;
+            Move(-x, -y);
+            return;
+        }
+
+    }
 
     void Move(float x, float y)
     {
