@@ -8,7 +8,7 @@ public class GameLogic : MonoBehaviour
     public Player player;
     public Enemy enemy;
 
-    bool gameOver;
+    public bool gameOver;
     bool gamePaused;
 
     // tells the game that a one

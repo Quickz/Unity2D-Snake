@@ -51,6 +51,9 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+
+        CheckForRestart();
+
         if (gameLogic.stepAvailable)
         {
             pathFinder.ClearGrid();
@@ -81,6 +84,15 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void CheckForRestart()
+    {
+        if (Input.GetKeyDown("r"))
+        {
+            Destroy(gameObject);
+            Destroy(exit.gameObject);
+        }
+    }
+
     // checks if enemy has reached exit point
     public bool CheckForExit()
     {
@@ -94,12 +106,12 @@ public class Enemy : MonoBehaviour
                 var child = snake.GetChild(
                         snake.childCount - 1
                     );
-                Object.Destroy(child.gameObject);
+                Destroy(child.gameObject);
                 return false;
             }
 
-            Object.Destroy(snake.gameObject);
-            Object.Destroy(exit.gameObject);
+            Destroy(snake.gameObject);
+            Destroy(exit.gameObject);
             return true;
         }
         return false;
@@ -227,7 +239,7 @@ public class Enemy : MonoBehaviour
         float[] coord = GenEnemySpwnCoord();
         if (coord == null) return;
 
-        var exitObj = Object.Instantiate(
+        var exitObj = Instantiate(
             Resources.Load("enemyExit")
         ) as GameObject;
 

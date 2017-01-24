@@ -51,14 +51,18 @@ public class highQualityFood : MonoBehaviour
 	void Update()
     {
 
-        if (stepAvailable())
-        {
+        CheckForRestart();
 
+        if (stepAvailable())
             MoveFood();
 
-        }
-
 	}
+
+    void CheckForRestart()
+    {
+        if (Input.GetKeyDown("r"))
+            Destroy(gameObject);
+    }
 
     void SetMovementAxis()
     {
@@ -66,16 +70,6 @@ public class highQualityFood : MonoBehaviour
         movX = axis == 1 ? 1 : 0;
         movY = axis != 1 ? 1 : 0;
     }
-    //void OnTriggerEnter2D(Collider2D col)
-    //{
-    //    if (col.name == "tail")
-    //    {
-    //        Debug.Log("asdasds!!!");
-    //        stepDir = -stepDir;
-    //        MoveFood();
-
-    //    }
-    //}
 
     bool CoordIsFree(float x, float y)
     {
