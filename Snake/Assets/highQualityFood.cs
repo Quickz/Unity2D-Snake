@@ -19,8 +19,7 @@ public class highQualityFood : MonoBehaviour
     int steps;
     int stepDir;
 
-    // will food move horizontally
-    // or will it move vertically<---------------
+    // horizontal/ vertical movement
     int movX;
     int movY;
 

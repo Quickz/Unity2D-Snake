@@ -59,7 +59,7 @@ public class Enemy : MonoBehaviour
             pathFinder.ClearGrid();
             GetGridObstacles();
 
-            if (exit == null)
+            if (exit == null || ExitInsidePlayer())
             {
                 
                 // checking if there's a high food available
@@ -74,6 +74,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                
                 MoveSnake(exit);
 
                 if (CheckForExit())
@@ -175,18 +176,35 @@ public class Enemy : MonoBehaviour
         return coord;
     }
 
-    bool ValidEnemySpwnPos(float[] coord)
+    bool ExitInsidePlayer()
     {
-
-        for (int i = 0; i < player.transform.childCount; i++)
+        for (int i = 0; i < player.childCount; i++)
         {
-            var pos = player.transform.GetChild(i).position;
+            var pos = player.GetChild(i).position;
+            if (exit.position == pos)
+                return true;
+        }
+        return false;
+    }
+
+    bool OutsideSnakeCoord(float[] coord, Transform snake)
+    {
+        for (int i = 0; i < snake.childCount; i++)
+        {
+            var pos = snake.GetChild(i).position;
 
             // making sure the enemy doesn't spawn
             // inside the player snake
             if (pos.x == coord[0] && pos.y == coord[1])
                 return false;
         }
+        return true;
+    }
+
+    bool ValidEnemySpwnPos(float[] coord)
+    {
+        if (!OutsideSnakeCoord(coord, player.transform))
+            return false;
 
         /*
             making sure the snake's head
@@ -232,12 +250,21 @@ public class Enemy : MonoBehaviour
     }
 
     // creates an exit point for the enemy snake
-    public void CreateEnemyExit()
+    public void CreateEnemyExit(int antistuck = 0)
     {
+        antistuck++;
+        if (antistuck > 200)
+            return;
 
         // generates position
         float[] coord = GenEnemySpwnCoord();
         if (coord == null) return;
+
+        if (!OutsideSnakeCoord(coord, snake))
+        {
+            CreateEnemyExit(antistuck);
+            return;
+        }
 
         var exitObj = Instantiate(
             Resources.Load("enemyExit")
