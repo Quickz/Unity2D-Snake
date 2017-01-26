@@ -52,7 +52,8 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        CheckForRestart();
+        if (!gameLogic.gameOver)
+            CheckForRestart();
 
         if (gameLogic.stepAvailable)
         {
@@ -89,8 +90,11 @@ public class Enemy : MonoBehaviour
     {
         if (Input.GetKeyDown("r"))
         {
+            if (exit != null)
+                Destroy(exit.gameObject);
+
             Destroy(gameObject);
-            Destroy(exit.gameObject);
+
         }
     }
 

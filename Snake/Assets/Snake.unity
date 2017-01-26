@@ -403,6 +403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   enemy: {fileID: 0}
+  gameOver: 0
   stepAvailable: 0
   time: 0
   gameSpeed: 0

@@ -34,7 +34,7 @@ public class PlayerHead : MonoBehaviour
             gameLogic.UpScore();
             Destroy(col.gameObject);
         }
-        else if (col.name == "tail")
+        else if (col.name == "tail" || col.name == "head")
             gameLogic.GameOver();
 
     }
