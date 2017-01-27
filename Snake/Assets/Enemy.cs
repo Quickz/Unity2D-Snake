@@ -62,12 +62,20 @@ public class Enemy : MonoBehaviour
 
             if (exit == null || ExitInsidePlayer())
             {
-                
+                   
                 // checking if there's a high food available
                 // if not then just go for next best thing
                 var highFood = GameObject.Find("highQualityFood");
+
                 if (highFood != null)
-                    target = highFood.transform;
+                {
+                    var closest = ClosestFood(
+                        gameLogic.food,
+                        highFood.transform
+                    );
+
+                    target = closest;
+                }
                 else
                     target = gameLogic.food;
 
@@ -84,6 +92,34 @@ public class Enemy : MonoBehaviour
             }
 
         }
+    }
+
+    Transform ClosestFood(Transform food1, Transform food2)
+    {
+        float dis1 = GetDistance(food1);
+        float dis2 = GetDistance(food2);
+        return dis1 < dis2 ? food1 : food2;
+    }
+
+    float GetDistance(Transform obj)
+    {
+        float enemyX = head.position.x;
+        float enemyY = head.position.y;
+
+        float objX = obj.position.x;
+        float objY = obj.position.y;
+
+        float valX = GetDifference(enemyX, objX);
+        float valY = GetDifference(enemyY, objY);
+
+        return valX + valY;
+    }
+
+    // gets x/y coordinate difference
+    float GetDifference(float val1, float val2)
+    {
+        float result = val1 - val2;
+        return Mathf.Abs(result);
     }
 
     void CheckForRestart()
