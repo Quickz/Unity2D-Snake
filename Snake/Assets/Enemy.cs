@@ -33,8 +33,8 @@ public class Enemy : MonoBehaviour
 
         player = game.transform.GetChild(0);
 
-        mapX = gameLogic.mapX;
-        mapY = gameLogic.mapY;
+        mapX = gameLogic.mapX + 1;
+        mapY = gameLogic.mapY + 1;
 
         snake.name = "enemy";
         SetRandomPos();
@@ -57,6 +57,7 @@ public class Enemy : MonoBehaviour
 
         if (gameLogic.stepAvailable)
         {
+
             pathFinder.ClearGrid();
             GetGridObstacles();
 
@@ -125,13 +126,15 @@ public class Enemy : MonoBehaviour
     void CheckForRestart()
     {
         if (Input.GetKeyDown("r"))
-        {
-            if (exit != null)
-                Destroy(exit.gameObject);
+            DestroySelf();
+    }
 
-            Destroy(gameObject);
+    public void DestroySelf()
+    {
+        if (exit != null)
+            Destroy(exit.gameObject);
 
-        }
+        Destroy(gameObject);
     }
 
     // checks if enemy has reached exit point
@@ -158,23 +161,35 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    // creates a red enemy snake
+    // sets random starting position
     public void SetRandomPos()
     {
 
         // generating random coordinates
-        float[] coord = GenEnemySpwnCoord();   
+        float[] coord = GenEnemySpwnCoord();
 
-        // setting position
-        for (int i = 0; i < snake.childCount; i++)
+        /*
+         * setting position
+         */
+
+        // head
+        AssignCoord(head, coord[0], coord[1]);
+        
+        // tail
+        for (int i = 1; i < snake.childCount; i++)
         {
             Transform child = snake.GetChild(i);
-            Vector2 pos = child.position;
-            pos.x = coord[0];
-            pos.y = coord[1];
-            child.position = pos;
+            AssignCoord(child, coord[2], coord[3]);
         }
 
+    }
+
+    void AssignCoord(Transform obj, float coord1, float coord2)
+    {
+        Vector2 pos = obj.position;
+        pos.x = coord1;
+        pos.y = coord2;
+        obj.position = pos;
     }
 
     // generates position coordinates for the enemy
@@ -190,24 +205,40 @@ public class Enemy : MonoBehaviour
         float choice = (int)Random.Range(0, 4);
 
         float[] coord;
-        float x;
-        float y;
+
+        // head
+        float x, y;
+
+        // tail
+        float f, g;
+
+        // needed to spawn enemy 1 square away from the edge
+        float mapx = mapX - 0.5f;
+        float mapy = mapY - 0.5f;
 
         // right / left
         if (choice == 0 || choice == 1)
         {
-            x = choice == 0 ? mapX : -mapX;
-            y = (int)Random.Range(-mapY * 2, mapY * 2) / 2f;
+            x = choice == 0 ? mapx : -mapx;
+            y = (int)Random.Range(-mapy * 2, mapy * 2) / 2f;
+
+            f = x + (choice == 0 ? 0.5f : -0.5f);
+            g = y;
+
         }
         // top / bottom 
         else
         {
-            y = choice == 2 ? mapY : -mapY;
-            x = (int)Random.Range(-mapX * 2, mapX * 2) / 2f;
+            y = choice == 2 ? mapy : -mapy;
+            x = (int)Random.Range(-mapx * 2, mapx * 2) / 2f;
+
+            g = y + (choice == 2 ? 0.5f : -0.5f);
+            f = x;
+
         }
 
         // result
-        coord = new float[] { x, y };
+        coord = new float[] { x, y, f, g };
 
         // making sure the coordinate is valid
         if (!ValidEnemySpwnPos(coord))
@@ -364,7 +395,7 @@ public class Enemy : MonoBehaviour
     public int[,] GenMapGrid()
     {
         int[,] grid = new int[(int)(mapX * 4) + 1, (int)(mapY * 4) + 1];
-
+        
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             for (int j = 0; j < grid.GetLength(1); j++)

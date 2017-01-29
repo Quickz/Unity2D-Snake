@@ -149,13 +149,16 @@ public class AStarSearch
         return -1;
     }
 
-    bool validCoord (int x, int y)
+    bool validCoord (int x, int y, int[] target)
     {
+        // 2 is used to exlude the border
                // inside bounds
-        return x >= 0 && x < grid.GetLength(0) &&
-               y >= 0 && y < grid.GetLength(1) &&
+        return x >= 2 && x < grid.GetLength(0) - 2 &&
+               y >= 2 && y < grid.GetLength(1) - 2 &&
                // walkable
-               grid[x, y] != 1;
+               grid[x, y] != 1 ||
+               // targets can't be an obstacle
+               target[0] == x && target[1] == y;
     }
 
     List<Node> getNeighbours(int x, int y, int[] source, int[] target)
@@ -163,16 +166,16 @@ public class AStarSearch
         List<Node> neighbours = new List<Node>();
 
         // top
-        if (this.validCoord(x, y - 1))
+        if (this.validCoord(x, y - 1, target))
             neighbours.Add(new Node(x, y - 1, source, target));
         // right
-        if (this.validCoord(x + 1, y))
+        if (this.validCoord(x + 1, y, target))
             neighbours.Add(new Node(x + 1, y, source, target));
         // bottom
-        if (this.validCoord(x, y + 1))
+        if (this.validCoord(x, y + 1, target))
             neighbours.Add(new Node(x, y + 1, source, target));
         // left
-        if (this.validCoord(x - 1, y))
+        if (this.validCoord(x - 1, y, target))
             neighbours.Add(new Node(x - 1, y, source, target));
 
         return neighbours;

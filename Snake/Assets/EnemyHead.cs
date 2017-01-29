@@ -18,10 +18,12 @@ public class EnemyHead : MonoBehaviour
         gameLogic = game.GetComponent<GameLogic>();
         enemy = gameObject.transform.parent.GetComponent<Enemy>();
 
+
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
+
         if (col.name == "food")
         {
             // limiting enemy snake length
@@ -34,6 +36,8 @@ public class EnemyHead : MonoBehaviour
             gameLogic.UpScore();
             Destroy(col.gameObject);
         }
+        else if (col.name == "tail" || col.name == "head")
+            enemy.DestroySelf();
 
     }
 

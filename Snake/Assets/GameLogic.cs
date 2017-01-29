@@ -54,7 +54,7 @@ public class GameLogic : MonoBehaviour
         RespawnFood(food);
 
         enemy = null;
-        
+
     }
 
     // Update is called once per frame
