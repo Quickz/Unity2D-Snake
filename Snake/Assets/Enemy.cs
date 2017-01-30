@@ -359,7 +359,9 @@ public class Enemy : MonoBehaviour
 
         path = pathFinder.run(enemyPos, foodPos);
 
-        if (path != null)
+        if (path == null)
+            DestroySelf();
+        else
         {
             snakeLogic.MoveTail();
 
@@ -370,6 +372,7 @@ public class Enemy : MonoBehaviour
             snakeLogic.BendTail();
 
         }
+
     }
 
     public void GetGridObstacles()
