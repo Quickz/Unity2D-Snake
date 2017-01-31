@@ -30,6 +30,9 @@ public class GameLogic : MonoBehaviour
     GameObject gameOverNote;
     GameObject gamePausedNote;
 
+    Menu menu;
+    GameObject returnWarning;
+
     // Use this for initialization
     void Start()
     {
@@ -55,6 +58,8 @@ public class GameLogic : MonoBehaviour
 
         enemy = null;
 
+        menu = gameObject.GetComponent<Menu>();
+
     }
 
     // Update is called once per frame
@@ -63,11 +68,23 @@ public class GameLogic : MonoBehaviour
 
         stepAvailable = false;
 
+        if (Input.GetKeyDown("escape"))
+        {
+            if (returnWarning == null)
+                CreateReturnWarning();
+            else
+                Destroy(returnWarning);
+
+            if (!gamePaused) PauseGame();
+            else ResumeGame();
+
+            //menu.ChangeScene("Main Menu");
+        }
         if (Input.GetKeyDown("r"))
             RestartGame();
         if (gameOver)
             return;
-        else if (Input.GetKeyDown("p") || Input.GetKeyDown("escape"))
+        else if (Input.GetKeyDown("p"))
         {
             if (!gamePaused) PauseGame();
             else ResumeGame();
@@ -93,6 +110,19 @@ public class GameLogic : MonoBehaviour
             stepAvailable = true;
         }
 
+    }
+
+    public void CreateReturnWarning()
+    {
+        returnWarning = Object.Instantiate(
+            Resources.Load("ReturnWarning")
+        ) as GameObject;
+
+        var btnObj = returnWarning.transform.GetChild(0);
+        var btn = btnObj.GetComponent<Button>();
+        
+        btn.onClick.AddListener(delegate { menu.ChangeScene("Main Menu"); });
+        
     }
 
     void CreateHighFood()
