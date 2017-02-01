@@ -69,17 +69,7 @@ public class GameLogic : MonoBehaviour
         stepAvailable = false;
 
         if (Input.GetKeyDown("escape"))
-        {
-            if (returnWarning == null)
-                CreateReturnWarning();
-            else
-                Destroy(returnWarning);
-
-            if (!gamePaused) PauseGame();
-            else ResumeGame();
-
-            //menu.ChangeScene("Main Menu");
-        }
+            ToggleReturnWarning();
         if (Input.GetKeyDown("r"))
             RestartGame();
         if (gameOver)
@@ -87,7 +77,13 @@ public class GameLogic : MonoBehaviour
         else if (Input.GetKeyDown("p"))
         {
             if (!gamePaused) PauseGame();
-            else ResumeGame();
+            else
+            {
+                if (returnWarning != null)
+                    Destroy(returnWarning);
+                ResumeGame();
+
+            }
         }
         else if (gamePaused)
             return;
@@ -112,17 +108,39 @@ public class GameLogic : MonoBehaviour
 
     }
 
+    // creates/hides a warning message
+    // and pauses/unpauses the game
+    void ToggleReturnWarning()
+    {
+        if (returnWarning == null)
+        {
+            CreateReturnWarning();
+            if (!gamePaused && !gameOver) PauseGame();
+        }
+        else
+        {
+            Destroy(returnWarning);
+            if (!gameOver)
+                ResumeGame();
+        }
+    }
+
     public void CreateReturnWarning()
     {
         returnWarning = Object.Instantiate(
             Resources.Load("ReturnWarning")
         ) as GameObject;
 
-        var btnObj = returnWarning.transform.GetChild(0);
-        var btn = btnObj.GetComponent<Button>();
-        
-        btn.onClick.AddListener(delegate { menu.ChangeScene("Main Menu"); });
-        
+        var warning = returnWarning.transform;
+
+        // obtaining button component
+        var yesBtn = warning.GetChild(0).GetComponent<Button>();
+        var noBtn = warning.GetChild(1).GetComponent<Button>();
+
+        // adding button events
+        yesBtn.onClick.AddListener(() => menu.ChangeScene("Main Menu"));
+        noBtn.onClick.AddListener(() => ToggleReturnWarning());
+
     }
 
     void CreateHighFood()
