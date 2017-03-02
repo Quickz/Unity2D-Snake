@@ -5,13 +5,10 @@ using UnityEngine;
 public class highQualityFood : MonoBehaviour
 {
 
+    Food foodLogic;
     Transform food;
 
-    GameObject game;
     GameLogic gameLogic;
-
-    float mapX;
-    float mapY;
 
     // counts game steps
     int gameSteps;
@@ -27,13 +24,10 @@ public class highQualityFood : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-
-        game = GameObject.FindWithTag("Game");
+        GameObject game = GameObject.FindWithTag("Game");
         gameLogic = game.GetComponent<GameLogic>();
+        foodLogic = gameObject.GetComponent<Food>();
         food = gameObject.transform;
-
-        mapX = gameLogic.mapX;
-        mapY = gameLogic.mapY;
 
         stepDir = 1;
         steps = 0;
@@ -49,19 +43,9 @@ public class highQualityFood : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-
-        CheckForRestart();
-
         if (stepAvailable())
             MoveFood();
-
 	}
-
-    void CheckForRestart()
-    {
-        if (Input.GetKeyDown("r"))
-            Destroy(gameObject);
-    }
 
     void SetMovementAxis()
     {
@@ -70,47 +54,16 @@ public class highQualityFood : MonoBehaviour
         movY = axis != 1 ? 1 : 0;
     }
 
-    bool CoordIsFree(float x, float y)
-    {
-        float posX = food.position.x + x;
-        float posY = food.position.y + y;
-
-        var player = gameLogic.player.snake;
-
-        bool playerFree = CheckSnakeCoord(player, posX, posY);
-        bool enemyFree = true;
-
-        if (gameLogic.enemy != null)
-        {
-            var enemy = gameLogic.enemy.snake;
-            enemyFree = CheckSnakeCoord(enemy, posX, posY);
-        }
-
-        return playerFree && enemyFree;
-    }
-
-    // checks if coordinate is for for the specified snake
-    bool CheckSnakeCoord(Transform snake, float x, float y)
-    {
-        for (int i = 0; i < snake.childCount; i++)
-        {
-            var pos = snake.GetChild(i).position;
-            if (pos.x == x && pos.y == y)
-                return false;
-        }
-        return true;
-    }
-
     void MoveFood()
     {
         float x = 0.5f * stepDir * movX;
         float y = 0.5f * stepDir * movY;
 
         // checking for obstacles
-        if (CoordIsFree(x, y))
+        if (foodLogic.CoordIsFree(x, y))
             Move(x, y);
         // trying to go to opposite direction
-        else if (steps <= 5 && steps >= 0 && CoordIsFree(-x, -y))
+        else if (steps <= 5 && steps >= 0 && foodLogic.CoordIsFree(-x, -y))
         {
             stepDir = -stepDir;
             Move(-x, -y);
@@ -144,8 +97,8 @@ public class highQualityFood : MonoBehaviour
 
     bool NewCoordOutOfBounds(float newX, float newY)
     {
-        return newX > mapX || newX < -mapX ||
-               newY > mapY || newY < -mapY;
+        return newX > foodLogic.mapX || newX < -foodLogic.mapX ||
+               newY > foodLogic.mapY || newY < -foodLogic.mapY;
     }
 
     // tells the food if it's allowed to move
