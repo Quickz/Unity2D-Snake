@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 4179170421768188}
   - component: {fileID: 212800934723314532}
   - component: {fileID: 61732432637210866}
+  - component: {fileID: 114355414610103340}
+  - component: {fileID: 114964600899508536}
   m_Layer: 0
   m_Name: randomBonus
   m_TagString: Untagged
@@ -55,6 +57,30 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.2}
+--- !u!114 &114355414610103340
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1628904667222686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8025b5b265bd9ac429efe6c7c6e30f7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapX: 0
+  mapY: 0
+--- !u!114 &114964600899508536
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1628904667222686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871389fc85114e9489a99aebe4c67bc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212800934723314532
 SpriteRenderer:
   m_ObjectHideFlags: 1

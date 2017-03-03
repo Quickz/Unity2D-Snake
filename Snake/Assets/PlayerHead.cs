@@ -24,7 +24,13 @@ public class PlayerHead : MonoBehaviour
     {
         if (col.name == "food")
         {
-            gameLogic.UpScore();
+            if (gameLogic.gameSpeed < gameLogic.defaultGameSpeed)
+            {
+                gameLogic.gameSpeed = gameLogic.defaultGameSpeed / 2;
+                gameLogic.UpScore(20);
+            }
+            else
+                gameLogic.UpScore(10);
             gameLogic.GrowSnake(snake, "tail");
             gameLogic.RespawnFood(gameLogic.food);
 
@@ -32,6 +38,12 @@ public class PlayerHead : MonoBehaviour
         else if (col.name == "highQualityFood")
         {
             gameLogic.UpScore();
+            Destroy(col.gameObject);
+        }
+        else if (col.name == "randomBonus")
+        {
+            var food = col.gameObject.GetComponent<randomFood>();
+            food.eatenByPlayer = true;
             Destroy(col.gameObject);
         }
         else if (col.name == "tail" || col.name == "head")

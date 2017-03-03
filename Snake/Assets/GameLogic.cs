@@ -16,6 +16,7 @@ public class GameLogic : MonoBehaviour
     public bool stepAvailable;
 
     public float time;
+    public float defaultGameSpeed;
     public float gameSpeed;
     int score;
 
@@ -26,7 +27,7 @@ public class GameLogic : MonoBehaviour
     Transform snake;
     public Transform food;
 
-    TextMesh scoreObj;
+    public TextMesh scoreObj;
     GameObject gameOverNote;
     GameObject gamePausedNote;
 
@@ -39,7 +40,8 @@ public class GameLogic : MonoBehaviour
         gameOver = false;
         gamePaused = false;
 
-        gameSpeed = 0.085f;
+        defaultGameSpeed = 0.085f;
+        gameSpeed = defaultGameSpeed;
         stepAvailable = false;
         time = 0;
         score = 0;
@@ -97,15 +99,51 @@ public class GameLogic : MonoBehaviour
         else if (Input.GetKeyDown("j") && enemy != null && enemy.exit == null)
             enemy.CreateEnemyExit();
         else if (Input.GetKeyDown("f"))
-            CreateHighFood();
+            CreateFood("highQualityFood");
+        else if (Input.GetKeyDown("g"))
+            CreateFood("randomBonus");
 
         time += Time.deltaTime;
         if (time >= gameSpeed)
         {
             time = 0;
             stepAvailable = true;
+            RestoreSpeed();
         }
 
+    }
+
+    public void ChangeScoreColor(byte r, byte g, byte b)
+    {
+        scoreObj.color = new Color32(r, g, b, 200);
+    }
+
+    /**
+     * if current game speed does not match
+     * the default, the speed is gradually
+     * changed towards the default value
+     */
+    void RestoreSpeed()
+    {
+        if (gameSpeed < defaultGameSpeed)
+        {
+            gameSpeed += gameSpeed / 75;
+            if (gameSpeed > defaultGameSpeed)
+                RestoreSpeedAndColor();
+        }
+        else if (gameSpeed > defaultGameSpeed)
+        {
+            gameSpeed -= defaultGameSpeed / 25;
+            if (gameSpeed < defaultGameSpeed)
+                RestoreSpeedAndColor();
+        }
+    }
+
+    // restores score color and game speed
+    void RestoreSpeedAndColor()
+    {
+        ChangeScoreColor(255, 255, 255);
+        gameSpeed = defaultGameSpeed;
     }
 
     // creates/hides a warning message
@@ -143,14 +181,14 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    void CreateHighFood()
+    void CreateFood(string name)
     {
         var food = Object.Instantiate(
-            Resources.Load("highQualityFood")
+            Resources.Load(name)
         ) as GameObject;
 
         food.transform.parent = game.transform;
-        food.name = "highQualityFood";
+        food.name = name;
 
     }
 
@@ -286,6 +324,7 @@ public class GameLogic : MonoBehaviour
         gameOver = false;
         ResumeGame();
         RespawnFood(food);
+        RestoreSpeedAndColor();
 
     }
     
