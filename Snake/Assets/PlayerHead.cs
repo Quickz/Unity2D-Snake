@@ -7,6 +7,7 @@ public class PlayerHead : MonoBehaviour
 
     GameObject game;
     Transform snake;
+    Snake snakeLogic;
     GameLogic gameLogic;
 
     int score;
@@ -17,16 +18,16 @@ public class PlayerHead : MonoBehaviour
         game = GameObject.FindWithTag("Game");
         snake = game.transform.GetChild(0);
         gameLogic = game.GetComponent<GameLogic>();
-
+        snakeLogic = gameObject.transform.parent.GetComponent<Snake>();
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.name == "food")
         {
-            if (gameLogic.gameSpeed < gameLogic.defaultGameSpeed)
+            if (snakeLogic.speed < snakeLogic.defaultSpeed)
             {
-                gameLogic.gameSpeed = gameLogic.defaultGameSpeed / 2;
+                snakeLogic.speed = snakeLogic.defaultSpeed / 2;
                 gameLogic.UpScore(20);
             }
             else
@@ -43,7 +44,7 @@ public class PlayerHead : MonoBehaviour
         else if (col.name == "randomBonus")
         {
             var food = col.gameObject.GetComponent<randomFood>();
-            food.eatenByPlayer = true;
+            food.GetBonus(snakeLogic);
             Destroy(col.gameObject);
         }
         else if (col.name == "tail" || col.name == "head")

@@ -9,9 +9,7 @@ public class highQualityFood : MonoBehaviour
     Transform food;
 
     GameLogic gameLogic;
-
-    // counts game steps
-    int gameSteps;
+    float time;
 
     int steps;
     int stepDir;
@@ -31,7 +29,6 @@ public class highQualityFood : MonoBehaviour
 
         stepDir = 1;
         steps = 0;
-        gameSteps = 0;
 
         // moving the food to a random position
         gameLogic.RespawnFood(food);
@@ -39,13 +36,17 @@ public class highQualityFood : MonoBehaviour
         SetMovementAxis();
 
     }
-	
-	// Update is called once per frame
-	void Update()
+
+    // Update is called once per frame
+    void Update()
     {
-        if (stepAvailable())
+        time += Time.deltaTime;
+        if (time >= gameLogic.gameSpeed * 3)
+        {
             MoveFood();
-	}
+            time = 0;
+        }
+    }
 
     void SetMovementAxis()
     {
@@ -99,23 +100,6 @@ public class highQualityFood : MonoBehaviour
     {
         return newX > foodLogic.mapX || newX < -foodLogic.mapX ||
                newY > foodLogic.mapY || newY < -foodLogic.mapY;
-    }
-
-    // tells the food if it's allowed to move
-    // needed to be able to move every 3 game steps
-    // instead of 1
-    bool stepAvailable()
-    {
-        if (gameLogic.stepAvailable)
-            gameSteps++;
-
-        if (gameSteps > 2)
-        {
-            gameSteps = 0;
-            return true;
-        }
-
-        return false;
     }
 
 }

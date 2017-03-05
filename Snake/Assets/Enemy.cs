@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     public Transform snake;
     Transform head;
 
+    float time;
     float mapX;
     float mapY;
 
@@ -30,6 +31,7 @@ public class Enemy : MonoBehaviour
 
         snake = gameObject.transform;
         head = snake.GetChild(0);
+        snakeLogic.speed = 0.085f;
 
         player = game.transform.GetChild(0);
 
@@ -52,10 +54,12 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        if (!gameLogic.gameOver)
+        if (gameLogic.gameOver) return;
+        else
             CheckForRestart();
 
-        if (gameLogic.stepAvailable)
+        time += Time.deltaTime;
+        if (time >= snakeLogic.speed)
         {
 
             pathFinder.ClearGrid();
@@ -91,6 +95,9 @@ public class Enemy : MonoBehaviour
                     Destroy(gameObject);
 
             }
+
+            snakeLogic.RestoreSpeed();
+            time = 0;
 
         }
     }

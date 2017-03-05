@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     GameLogic gameLogic;
     GameObject game;
     public Transform snake;
+    float time;
 
     void Start()
     {
@@ -18,14 +19,24 @@ public class Player : MonoBehaviour
 
         snakeLogic.currDir = "right";
         snakeLogic.lastDir = "right";
+        time = 0;
 
     }
 
     void Update()
     {
 
-        if (gameLogic.stepAvailable)
+        if (gameLogic.gameOver) return;
+
+        time += Time.deltaTime;
+        if (time >= snakeLogic.speed)
+        {
+            if (snakeLogic.speed == snakeLogic.defaultSpeed)
+                gameLogic.RestoreScoreColor();
             MoveSnake();
+            snakeLogic.RestoreSpeed();
+            time = 0;
+        }
 
     }
 

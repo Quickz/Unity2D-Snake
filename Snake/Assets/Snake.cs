@@ -9,13 +9,37 @@ public class Snake : MonoBehaviour
 
     public Transform snake;
     public Transform head;
+    public float defaultSpeed;
+    public float speed;
 
 	void Start()
     {
-
+        defaultSpeed = 0.085f;
+        speed = defaultSpeed;
         snake = gameObject.transform;
         head = snake.GetChild(0);
 
+    }
+
+    /**
+     * if current speed does not match
+     * the default, it is gradually
+     * changed towards the default value
+     */
+    public void RestoreSpeed()
+    {
+        if (speed < defaultSpeed)
+        {
+            speed += speed / 75;
+            if (speed > defaultSpeed)
+                speed = defaultSpeed;
+        }
+        else if (speed > defaultSpeed)
+        {
+            speed -= defaultSpeed / 25;
+            if (speed < defaultSpeed)
+                speed = defaultSpeed;
+        }
     }
 
     // bends tail piece depending
@@ -76,4 +100,3 @@ public class Snake : MonoBehaviour
     }
 
 }//end
-

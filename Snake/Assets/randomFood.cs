@@ -6,41 +6,39 @@ public class randomFood : MonoBehaviour
 {
 
     GameLogic gameLogic;
-    public bool eatenByPlayer;
+    public Transform eatenBy;
 
 	// Use this for initialization
 	void Start()
     {
         GameObject game = GameObject.FindWithTag("Game");
         gameLogic = game.GetComponent<GameLogic>();
-        eatenByPlayer = false;
 	}
 
-    void OnDestroy()
+    public void GetBonus(Snake snake)
     {
-        if (!eatenByPlayer) return;
         int choice = Random.Range(0, 3);
 
         if (choice == 1)
-            SpeedUp();
+            SpeedUp(snake);
         else if (choice == 2)
-            SpeedDown();
-        else
+            SpeedDown(snake);
+        else if (snake.name == "snake")
             gameLogic.UpScore();
     }
 
-    void SpeedUp()
+    void SpeedUp(Snake snake)
     {
-        if (eatenByPlayer)
+        if (snake.name == "snake")
             gameLogic.ChangeScoreColor(176, 255, 179);
-        gameLogic.gameSpeed = gameLogic.defaultGameSpeed / 2;
+        snake.speed = snake.defaultSpeed / 2;
     }
 
-    void SpeedDown()
+    void SpeedDown(Snake snake)
     {
-        if (eatenByPlayer)
+        if (snake.name == "snake")
             gameLogic.ChangeScoreColor(189, 169, 255);
-        gameLogic.gameSpeed = gameLogic.defaultGameSpeed * 2;
+        snake.speed = snake.defaultSpeed * 2;
     }
 
 

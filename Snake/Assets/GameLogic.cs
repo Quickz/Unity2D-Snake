@@ -10,13 +10,8 @@ public class GameLogic : MonoBehaviour
 
     public bool gameOver;
     bool gamePaused;
-
-    // tells the game that a one
-    // gamespeed cycle has passed
-    public bool stepAvailable;
-
+    
     public float time;
-    public float defaultGameSpeed;
     public float gameSpeed;
     int score;
 
@@ -40,9 +35,7 @@ public class GameLogic : MonoBehaviour
         gameOver = false;
         gamePaused = false;
 
-        defaultGameSpeed = 0.085f;
-        gameSpeed = defaultGameSpeed;
-        stepAvailable = false;
+        gameSpeed = 0.085f;
         time = 0;
         score = 0;
 
@@ -67,8 +60,6 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        stepAvailable = false;
 
         if (Input.GetKeyDown("escape"))
             ToggleReturnWarning();
@@ -105,11 +96,7 @@ public class GameLogic : MonoBehaviour
 
         time += Time.deltaTime;
         if (time >= gameSpeed)
-        {
             time = 0;
-            stepAvailable = true;
-            RestoreSpeed();
-        }
 
     }
 
@@ -118,32 +105,10 @@ public class GameLogic : MonoBehaviour
         scoreObj.color = new Color32(r, g, b, 200);
     }
 
-    /**
-     * if current game speed does not match
-     * the default, the speed is gradually
-     * changed towards the default value
-     */
-    void RestoreSpeed()
-    {
-        if (gameSpeed < defaultGameSpeed)
-        {
-            gameSpeed += gameSpeed / 75;
-            if (gameSpeed > defaultGameSpeed)
-                RestoreSpeedAndColor();
-        }
-        else if (gameSpeed > defaultGameSpeed)
-        {
-            gameSpeed -= defaultGameSpeed / 25;
-            if (gameSpeed < defaultGameSpeed)
-                RestoreSpeedAndColor();
-        }
-    }
-
     // restores score color and game speed
-    void RestoreSpeedAndColor()
+    public void RestoreScoreColor()
     {
         ChangeScoreColor(255, 255, 255);
-        gameSpeed = defaultGameSpeed;
     }
 
     // creates/hides a warning message
@@ -324,8 +289,8 @@ public class GameLogic : MonoBehaviour
         gameOver = false;
         ResumeGame();
         RespawnFood(food);
-        RestoreSpeedAndColor();
-
+        RestoreScoreColor();
+        player.snakeLogic.speed = player.snakeLogic.defaultSpeed;
     }
     
     void PauseGame()
