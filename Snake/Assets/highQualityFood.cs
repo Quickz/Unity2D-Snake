@@ -40,6 +40,7 @@ public class highQualityFood : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameLogic.gamePaused || gameLogic.gameOver) return;
         time += Time.deltaTime;
         if (time >= gameLogic.gameSpeed * 3)
         {

@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (gameLogic.gameOver) return;
+        if (gameLogic.gamePaused || gameLogic.gameOver) return;
 
         time += Time.deltaTime;
         if (time >= snakeLogic.speed)

@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        if (gameLogic.gameOver) return;
+        if (gameLogic.gamePaused || gameLogic.gameOver) return;
         else
             CheckForRestart();
 

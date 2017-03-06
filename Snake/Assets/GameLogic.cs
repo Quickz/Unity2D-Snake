@@ -9,7 +9,7 @@ public class GameLogic : MonoBehaviour
     public Enemy enemy;
 
     public bool gameOver;
-    bool gamePaused;
+    public bool gamePaused;
     
     public float time;
     public float gameSpeed;
