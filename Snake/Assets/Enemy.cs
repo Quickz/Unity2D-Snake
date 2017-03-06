@@ -31,7 +31,6 @@ public class Enemy : MonoBehaviour
 
         snake = gameObject.transform;
         head = snake.GetChild(0);
-        snakeLogic.speed = 0.085f;
 
         player = game.transform.GetChild(0);
 

@@ -266,31 +266,7 @@ public class GameLogic : MonoBehaviour
 
     void RestartGame()
     {
-        // resetting length
-        for (int i = 3; i < snake.childCount; i++)
-            Destroy(snake.GetChild(i).gameObject);
-
-        // resetting position
-        for (int i = 0; i < 3; i++)
-            ChangePos(snake.GetChild(i), -i / 2f, 0);
-
-        // resetting direction
-        player.snakeLogic.currDir = "right";
-        player.snakeLogic.lastDir = "right";
-
-        // resetting score
-        UpScore(-score);
-
-        // preventing last tail piece staying bent
-        player.snakeLogic.SetSpr(snake.GetChild(2), "square");
-
-        SetHeadColor(Color.white);
-        Destroy(gameOverNote);
-        gameOver = false;
-        ResumeGame();
-        RespawnFood(food);
-        RestoreScoreColor();
-        player.snakeLogic.speed = player.snakeLogic.defaultSpeed;
+        Application.LoadLevel(Application.loadedLevel);
     }
     
     void PauseGame()
