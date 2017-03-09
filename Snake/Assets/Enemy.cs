@@ -9,12 +9,10 @@ public class Enemy : MonoBehaviour
     public List<int[]> path;
     public Transform exit;
 
-    GameObject game;
     Transform player;
     Transform target;
 
     public Snake snakeLogic;
-    GameLogic gameLogic;
     
     public Transform snake;
     Transform head;
@@ -25,17 +23,15 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        game = GameObject.FindWithTag("Game");
         snakeLogic = gameObject.GetComponent<Snake>();
-        gameLogic = game.GetComponent<GameLogic>();
 
         snake = gameObject.transform;
         head = snake.GetChild(0);
 
-        player = game.transform.GetChild(0);
+        player = GameLogic.snake;
 
-        mapX = gameLogic.mapX + 1;
-        mapY = gameLogic.mapY + 1;
+        mapX = GameLogic.mapX + 1;
+        mapY = GameLogic.mapY + 1;
 
         snake.name = "enemy";
         SetRandomPos();
@@ -43,7 +39,7 @@ public class Enemy : MonoBehaviour
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
 
-        target = gameLogic.food;
+        target = GameLogic.food;
 
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
@@ -53,7 +49,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        if (gameLogic.gamePaused || gameLogic.gameOver) return;
+        if (GameLogic.gamePaused || GameLogic.gameOver) return;
         else
             CheckForRestart();
 
@@ -66,7 +62,7 @@ public class Enemy : MonoBehaviour
 
             if (exit == null || ExitInsidePlayer())
             {
-                   
+
                 // checking if there's a high food available
                 // if not then just go for next best thing
                 var highFood = GameObject.Find("highQualityFood");
@@ -74,26 +70,19 @@ public class Enemy : MonoBehaviour
                 if (highFood != null)
                 {
                     var closest = ClosestFood(
-                        gameLogic.food,
+                        GameLogic.food,
                         highFood.transform
                     );
 
                     target = closest;
                 }
                 else
-                    target = gameLogic.food;
+                    target = GameLogic.food;
 
                 MoveSnake(target);
             }
-            else
-            {
-                
+            else if (!CheckForExit())
                 MoveSnake(exit);
-
-                if (CheckForExit())
-                    Destroy(gameObject);
-
-            }
 
             snakeLogic.RestoreSpeed();
             time = 0;
@@ -157,10 +146,9 @@ public class Enemy : MonoBehaviour
                         snake.childCount - 1
                     );
                 Destroy(child.gameObject);
-                return false;
+                return true;
             }
-
-            Destroy(snake.gameObject);
+            Destroy(gameObject);
             Destroy(exit.gameObject);
             return true;
         }

@@ -14,7 +14,7 @@ public class Snake : MonoBehaviour
 
 	void Start()
     {
-        defaultSpeed = 0.085f;
+        defaultSpeed = GameLogic.gameSpeed;
         speed = defaultSpeed;
         snake = gameObject.transform;
         head = snake.GetChild(0);
@@ -40,6 +40,20 @@ public class Snake : MonoBehaviour
             if (speed < defaultSpeed)
                 speed = defaultSpeed;
         }
+    }
+
+    // adds one square to a tail
+    public static void GrowSnake(Transform snake, string resource)
+    {
+        // generating the piece
+        var tail = Instantiate(
+            Resources.Load(resource)
+            ) as GameObject;
+
+        // changing a few properties
+        tail.name = "tail";
+        tail.transform.position = snake.GetChild(1).position;
+        tail.transform.parent = snake;
     }
 
     // bends tail piece depending

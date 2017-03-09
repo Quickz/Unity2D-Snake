@@ -5,32 +5,33 @@ using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour
 {
-    public Player player;
-    public Enemy enemy;
+    public static Player player { get; private set; }
+    public static Enemy enemy { get; private set; }
 
-    public bool gameOver;
-    public bool gamePaused;
+    public static bool gameOver { get; private set; }
+    public static bool gamePaused { get; private set; }
     
-    public float time;
-    public float gameSpeed;
-    int score;
+    public static float time { get; private set; }
+    public static float gameSpeed { get; private set; }
+    public static int score { get; private set; }
 
-    public float mapX;
-    public float mapY;
+    public static float mapX { get; private set; }
+    public static float mapY { get; private set; }
 
     Transform game;
-    Transform snake;
-    public Transform food;
+    public static Transform snake { get; private set; }
+    public static Transform food { get; private set; }
 
-    public TextMesh scoreObj;
-    GameObject gameOverNote;
+    public static TextMesh scoreObj { get; private set; }
+    static GameObject gameOverNote;
     GameObject gamePausedNote;
 
     Menu menu;
     GameObject returnWarning;
 
-    // Use this for initialization
-    void Start()
+    // awake is used to assign variables
+    // before all the other objects Start()
+    void Awake()
     {
         gameOver = false;
         gamePaused = false;
@@ -100,15 +101,9 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    public void ChangeScoreColor(byte r, byte g, byte b)
+    public static void ChangeScoreColor(byte r, byte g, byte b)
     {
         scoreObj.color = new Color32(r, g, b, 200);
-    }
-
-    // restores score color and game speed
-    public void RestoreScoreColor()
-    {
-        ChangeScoreColor(255, 255, 255);
     }
 
     // creates/hides a warning message
@@ -169,17 +164,8 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    // changes position of a specified transform
-    public void ChangePos(Transform obj, float x = 0, float y = 0)
-    {
-        Vector2 pos = obj.position;
-        pos.x = x;
-        pos.y = y;
-        obj.position = pos;
-    }
-
     // moves the food to a random position
-    public void RespawnFood(Transform food)
+    public static void RespawnFood(Transform food)
     {
 
         Vector2 pos = food.position;
@@ -218,28 +204,14 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    // adds one square to a tail
-    public void GrowSnake(Transform snake, string resource)
-    {
-        // generating the piece
-        var tail = Instantiate(
-            Resources.Load(resource)
-            ) as GameObject;
-
-        // changing a few properties
-        tail.name = "tail";
-        tail.transform.position = snake.GetChild(1).position;
-        tail.transform.parent = snake;
-    }
-
-    public void UpScore(int addition = 10)
+    public static void UpScore(int addition = 10)
     {
         score += addition;
         scoreObj.text = "Score: " + score;
     }
 
     // checks if the head is inside the tail
-    public void GameOver()
+    public static void GameOver()
     {
         GameOverNotification();
         SetHeadColor(Color.red);
@@ -249,14 +221,14 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    void SetHeadColor(Color color)
+    static void SetHeadColor(Color color)
     {
         var head = snake.GetChild(0);
         var spr = head.transform.GetComponent<SpriteRenderer>();
         spr.color = color;
     }
 
-    void GameOverNotification()
+    static void GameOverNotification()
     {
         gameOverNote = Instantiate(
             Resources.Load("gameOver")

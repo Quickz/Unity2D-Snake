@@ -7,8 +7,6 @@ public class highQualityFood : MonoBehaviour
 
     Food foodLogic;
     Transform food;
-
-    GameLogic gameLogic;
     float time;
 
     int steps;
@@ -22,8 +20,6 @@ public class highQualityFood : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        GameObject game = GameObject.FindWithTag("Game");
-        gameLogic = game.GetComponent<GameLogic>();
         foodLogic = gameObject.GetComponent<Food>();
         food = gameObject.transform;
 
@@ -31,7 +27,7 @@ public class highQualityFood : MonoBehaviour
         steps = 0;
 
         // moving the food to a random position
-        gameLogic.RespawnFood(food);
+        GameLogic.RespawnFood(food);
 
         SetMovementAxis();
 
@@ -40,9 +36,9 @@ public class highQualityFood : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameLogic.gamePaused || gameLogic.gameOver) return;
+        if (GameLogic.gamePaused || GameLogic.gameOver) return;
         time += Time.deltaTime;
-        if (time >= gameLogic.gameSpeed * 3)
+        if (time >= GameLogic.gameSpeed * 3)
         {
             MoveFood();
             time = 0;
@@ -89,12 +85,21 @@ public class highQualityFood : MonoBehaviour
             return;
         }
 
-        gameLogic.ChangePos(food, newX, newY);
+        ChangePos(food, newX, newY);
 
         // changing direction of movement
         if (steps > 5 || steps < 0)
             stepDir = -stepDir;
 
+    }
+
+    // changes position of a specified transform
+    void ChangePos(Transform obj, float x = 0, float y = 0)
+    {
+        Vector2 pos = obj.position;
+        pos.x = x;
+        pos.y = y;
+        obj.position = pos;
     }
 
     bool NewCoordOutOfBounds(float newX, float newY)

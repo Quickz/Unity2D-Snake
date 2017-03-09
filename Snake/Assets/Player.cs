@@ -5,17 +5,14 @@ public class Player : MonoBehaviour
 {
 
     public Snake snakeLogic;
-    GameLogic gameLogic;
-    GameObject game;
     public Transform snake;
     float time;
 
     void Start()
     {
-        game = GameObject.FindWithTag("Game");
+        GameObject game = GameObject.FindWithTag("Game");
         snake = game.transform.GetChild(0);
         snakeLogic = gameObject.GetComponent<Snake>();
-        gameLogic = game.GetComponent<GameLogic>();
 
         snakeLogic.currDir = "right";
         snakeLogic.lastDir = "right";
@@ -26,13 +23,14 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (gameLogic.gamePaused || gameLogic.gameOver) return;
+        if (GameLogic.gamePaused || GameLogic.gameOver) return;
 
         time += Time.deltaTime;
         if (time >= snakeLogic.speed)
         {
+            // restoring default color
             if (snakeLogic.speed == snakeLogic.defaultSpeed)
-                gameLogic.RestoreScoreColor();
+                GameLogic.ChangeScoreColor(255, 255, 255);
             MoveSnake();
             snakeLogic.RestoreSpeed();
             time = 0;
@@ -116,10 +114,10 @@ public class Player : MonoBehaviour
         pos.y += (float)y;
 
         // checking for boundaries
-        pos.x = pos.x > gameLogic.mapX ? -gameLogic.mapX :
-                pos.x < -gameLogic.mapX ? gameLogic.mapX : pos.x;
-        pos.y = pos.y > gameLogic.mapY ? -gameLogic.mapY :
-                pos.y < -gameLogic.mapY ? gameLogic.mapY : pos.y;
+        pos.x = pos.x > GameLogic.mapX ? -GameLogic.mapX :
+                pos.x < -GameLogic.mapX ? GameLogic.mapX : pos.x;
+        pos.y = pos.y > GameLogic.mapY ? -GameLogic.mapY :
+                pos.y < -GameLogic.mapY ? GameLogic.mapY : pos.y;
 
         head.transform.position = pos;
 

@@ -6,10 +6,6 @@ public class Food : MonoBehaviour
 {
 
     Transform food;
-
-    GameObject game;
-    GameLogic gameLogic;
-
     public float mapX;
     public float mapY;
 
@@ -21,23 +17,18 @@ public class Food : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
-        game = GameObject.FindWithTag("Game");
-        gameLogic = game.GetComponent<GameLogic>();
         food = gameObject.transform;
-
-        mapX = gameLogic.mapX;
-        mapY = gameLogic.mapY;
+        mapX = GameLogic.mapX;
+        mapY = GameLogic.mapY;
 
         // moving the food to a random position
-        gameLogic.RespawnFood(food);
+        GameLogic.RespawnFood(food);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
         CheckForRestart();
 
     }
@@ -53,14 +44,14 @@ public class Food : MonoBehaviour
         float posX = food.position.x + x;
         float posY = food.position.y + y;
 
-        var player = gameLogic.player.snake;
+        var player = GameLogic.player.snake;
 
         bool playerFree = CheckSnakeCoord(player, posX, posY);
         bool enemyFree = true;
 
-        if (gameLogic.enemy != null)
+        if (GameLogic.enemy != null)
         {
-            var enemy = gameLogic.enemy.snake;
+            var enemy = GameLogic.enemy.snake;
             enemyFree = CheckSnakeCoord(enemy, posX, posY);
         }
 
