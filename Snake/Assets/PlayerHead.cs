@@ -36,7 +36,9 @@ public class PlayerHead : MonoBehaviour
         }
         else if (col.name == "highQualityFood")
         {
-            GameLogic.UpScore();
+            // the more time is the, the more score is obtained
+            float time = col.GetComponent<timeLimit>().timeLeft;
+            GameLogic.UpScore((int)Mathf.Round(time) * 10);
             Destroy(col.gameObject);
         }
         else if (col.name == "randomBonus")

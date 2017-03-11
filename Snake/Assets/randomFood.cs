@@ -15,9 +15,9 @@ public class randomFood : MonoBehaviour
 
     public void GetBonus(Snake snake)
     {
-        int choice = Random.Range(0, 3);
+        int choice = Random.Range(0, 4);
 
-        if (choice == 1)
+        if (choice < 2)
             SpeedUp(snake);
         else if (choice == 2)
             SpeedDown(snake);
