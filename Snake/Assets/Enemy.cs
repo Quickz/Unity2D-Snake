@@ -10,7 +10,6 @@ public class Enemy : MonoBehaviour
     public Transform exit;
 
     Transform player;
-    Transform target;
 
     public Snake snakeLogic;
     
@@ -39,8 +38,6 @@ public class Enemy : MonoBehaviour
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
 
-        target = GameLogic.food;
-
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
 
@@ -50,8 +47,7 @@ public class Enemy : MonoBehaviour
     {
 
         if (GameLogic.gamePaused || GameLogic.gameOver) return;
-        else
-            CheckForRestart();
+        else CheckForRestart();
 
         time += Time.deltaTime;
         if (time >= snakeLogic.speed)
@@ -61,26 +57,7 @@ public class Enemy : MonoBehaviour
             GetGridObstacles();
 
             if (exit == null || ExitInsidePlayer())
-            {
-
-                // checking if there's a high food available
-                // if not then just go for next best thing
-                var highFood = GameObject.Find("highQualityFood");
-
-                if (highFood != null)
-                {
-                    var closest = ClosestFood(
-                        GameLogic.food,
-                        highFood.transform
-                    );
-
-                    target = closest;
-                }
-                else
-                    target = GameLogic.food;
-
-                MoveSnake(target);
-            }
+                MoveSnake(ClosestFood());
             else if (!CheckForExit())
                 MoveSnake(exit);
 
@@ -90,7 +67,30 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    Transform ClosestFood(Transform food1, Transform food2)
+    // returns the closest food
+    Transform ClosestFood()
+    {
+        int count = GameLogic.allFood.childCount;
+
+        // if nothing to compare to
+        if (count < 1)
+            return GameLogic.food;
+
+        Transform closest = GameLogic.allFood.GetChild(0);
+
+        // obtaining the closest one of the list
+        for (int i = 1; i < count; i++)
+        {
+            var food = GameLogic.allFood.GetChild(i);
+            closest = CloserFood(closest, food);
+        }
+
+        // comparing the main food with the rest
+        return CloserFood(closest, GameLogic.food);
+    }
+
+    // returns the food that is closer than the other
+    Transform CloserFood(Transform food1, Transform food2)
     {
         float dis1 = GetDistance(food1);
         float dis2 = GetDistance(food2);

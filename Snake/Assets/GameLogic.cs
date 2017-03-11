@@ -8,6 +8,8 @@ public class GameLogic : MonoBehaviour
     public static Player player { get; private set; }
     public static Enemy enemy { get; private set; }
 
+    public static Transform allFood;
+
     public static bool gameOver { get; private set; }
     public static bool gamePaused { get; private set; }
     
@@ -54,6 +56,7 @@ public class GameLogic : MonoBehaviour
 
         enemy = null;
 
+        allFood = GameObject.Find("allFood").transform;
         menu = gameObject.GetComponent<Menu>();
 
     }
@@ -147,7 +150,7 @@ public class GameLogic : MonoBehaviour
             Resources.Load(name)
         ) as GameObject;
 
-        food.transform.parent = game.transform;
+        food.transform.parent = allFood;
         food.name = name;
 
     }
