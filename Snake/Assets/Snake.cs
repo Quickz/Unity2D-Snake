@@ -94,6 +94,8 @@ public class Snake : MonoBehaviour
 
             if (i != tailLength)
                 ChangeSpr(backPiece, frontPiece);
+            else // if tail is shortened this is needed
+                SetSpr(backPiece, "square");
 
         }
 

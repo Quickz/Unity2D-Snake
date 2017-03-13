@@ -11,6 +11,8 @@ public class GameLogic : MonoBehaviour
 
     public static Transform allFood;
 
+    public static Transform allObstacles;
+
     public static bool gameOver { get; private set; }
     public static bool gamePaused { get; private set; }
     
@@ -53,11 +55,13 @@ public class GameLogic : MonoBehaviour
 
         food = game. GetChild(1);
         scoreObj = game.GetChild(3).GetComponent<TextMesh>();
-        RespawnFood(food);
 
         enemy = null;
 
         allFood = GameObject.Find("allFood").transform;
+        allObstacles = GameObject.Find("allObstacles").transform;
+        RespawnFood(food);
+
         menu = gameObject.GetComponent<Menu>();
 
     }
@@ -179,33 +183,33 @@ public class GameLogic : MonoBehaviour
         pos.x = (int)Random.Range(-mapX * 2, mapX * 2) / 2f;
         pos.y = (int)Random.Range(-mapY * 2, mapY * 2) / 2f;
 
-        // making sure the food doesn't spawn inside the snake
-        for (int i = 0; i < snake.childCount; i++)
-        {
-            Vector2 tailPos = snake.GetChild(i).position;
-            if (tailPos == pos)
-            {
-                RespawnFood(food);
-                return;
-            }
-        }
+        bool inSnake = !GameLogic.CheckContainerCoord(snake, pos);
+        bool inObstacle = !GameLogic.CheckContainerCoord(allObstacles, pos);
+        bool inEnemy = false;
 
         if (enemy != null)
+            inEnemy = !GameLogic.CheckContainerCoord(enemy.snake, pos);
+        
+        if (inSnake || inEnemy || inObstacle)
         {
-            // making sure the food doesn't spawn inside the enemy
-            for (int i = 0; i < enemy.snake.childCount; i++)
-            {
-                Vector2 tailPos = enemy.snake.GetChild(i).position;
-                if (tailPos == pos)
-                {
-                    RespawnFood(food);
-                    return;
-                }
-            }
+            RespawnFood(food);
+            return;
         }
 
         food.position = pos;
 
+    }
+
+    // checks if coordinate is for the specified transform
+    public static bool CheckContainerCoord(Transform container, Vector2 objPos)
+    {
+        for (int i = 0; i < container.childCount; i++)
+        {
+            Vector2 tailPos = container.GetChild(i).position;
+            if (tailPos == objPos)
+                return false;
+        }
+        return true;
     }
 
     public static void UpScore(int addition = 10)

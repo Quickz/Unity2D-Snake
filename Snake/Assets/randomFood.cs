@@ -15,14 +15,16 @@ public class randomFood : MonoBehaviour
 
     public void GetBonus(Snake snake)
     {
-        int choice = Random.Range(0, 4);
+        int choice = Random.Range(0, 5);
 
         if (choice < 2)
             SpeedUp(snake);
         else if (choice == 2)
             SpeedDown(snake);
-        else if (snake.name == "snake")
+        else if (snake.name == "snake" && choice == 3)
             GameLogic.UpScore();
+        else
+            ShortenSnake(snake);
     }
 
     void SpeedUp(Snake snake)
@@ -39,5 +41,19 @@ public class randomFood : MonoBehaviour
         snake.speed = snake.defaultSpeed * 2;
     }
 
+    void ShortenSnake(Snake snake)
+    {
+        int count = snake.snake.childCount;
+        if (count > 3)
+        {
+            var tail = snake.snake.GetChild(count - 1);
+
+            // generating poop
+            var food = GameLogic.CreateFood("poop");
+            food.transform.position = tail.position;
+
+            Destroy(tail.gameObject);
+        }
+    }
 
 }

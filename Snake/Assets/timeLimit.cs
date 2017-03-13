@@ -5,12 +5,13 @@ using UnityEngine;
 public class timeLimit : MonoBehaviour
 {
 
-    public float timeLeft { get; private set; }
+    public float timeLeft;
 
     // Use this for initialization
     void Start()
     {
-        timeLeft = Random.Range(4, 9);
+        if (timeLeft == 0)
+            timeLeft = Random.Range(4, 9);
 
     }
 	

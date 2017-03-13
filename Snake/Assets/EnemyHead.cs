@@ -38,7 +38,7 @@ public class EnemyHead : MonoBehaviour
             food.GetBonus(snakeLogic);
             Destroy(col.gameObject);
         }
-        else if (col.name == "tail" || col.name == "head")
+        else if (col.name == "tail" || col.name == "head" || col.name == "poop")
         {
             enemy.GenerateFood();
             enemy.DestroySelf();
