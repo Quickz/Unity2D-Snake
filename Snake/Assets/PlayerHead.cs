@@ -47,6 +47,11 @@ public class PlayerHead : MonoBehaviour
             food.GetBonus(snakeLogic);
             Destroy(col.gameObject);
         }
+        else if (col.name == "tinyFood")
+        {
+            GameLogic.UpScore(5);
+            Destroy(col.gameObject);
+        }
         else if (col.name == "tail" || col.name == "head")
             GameLogic.GameOver();
 

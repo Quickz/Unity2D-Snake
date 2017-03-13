@@ -30,7 +30,7 @@ public class EnemyHead : MonoBehaviour
                 Snake.GrowSnake(enemy.snake.transform, "enemyTail");
             GameLogic.RespawnFood(GameLogic.food);
         }
-        else if (col.name == "highQualityFood")
+        else if (col.name == "highQualityFood" || col.name == "tinyFood")
             Destroy(col.gameObject);
         else if (col.name == "randomBonus")
         {
@@ -39,10 +39,11 @@ public class EnemyHead : MonoBehaviour
             Destroy(col.gameObject);
         }
         else if (col.name == "tail" || col.name == "head")
+        {
+            enemy.GenerateFood();
             enemy.DestroySelf();
+        }
 
     }
-
-
 
 }

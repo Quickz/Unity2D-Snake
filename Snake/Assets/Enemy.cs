@@ -136,8 +136,17 @@ public class Enemy : MonoBehaviour
     {
         if (exit != null)
             Destroy(exit.gameObject);
-
         Destroy(gameObject);
+    }
+
+    // spawns food inside every tail piece
+    public void GenerateFood()
+    {
+        for (int i = 1; i < snake.childCount; i++)
+        {
+            var food = GameLogic.CreateFood("tinyFood");
+            food.transform.position = snake.GetChild(i).position;
+        }
     }
 
     // checks if enemy has reached exit point
@@ -365,7 +374,10 @@ public class Enemy : MonoBehaviour
             path = pathFinder.run(enemyPos, foodPos);
 
         if (path == null)
+        {
+            GenerateFood();
             DestroySelf();
+        }
         else
         {
             snakeLogic.MoveTail();

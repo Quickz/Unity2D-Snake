@@ -145,7 +145,7 @@ public class GameLogic : MonoBehaviour
 
     }
 
-    void CreateFood(string name)
+    public static GameObject CreateFood(string name)
     {
         var food = Object.Instantiate(
             Resources.Load(name)
@@ -153,7 +153,7 @@ public class GameLogic : MonoBehaviour
 
         food.transform.parent = allFood;
         food.name = name;
-
+        return food;
     }
 
     // creates a red enemy snake
