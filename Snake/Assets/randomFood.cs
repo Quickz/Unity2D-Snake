@@ -7,12 +7,6 @@ public class randomFood : MonoBehaviour
 
     public Transform eatenBy;
 
-	// Use this for initialization
-	void Start()
-    {
-
-	}
-
     public void GetBonus(Snake snake)
     {
         int choice = Random.Range(0, 5);

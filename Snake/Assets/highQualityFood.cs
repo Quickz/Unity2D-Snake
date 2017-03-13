@@ -16,7 +16,6 @@ public class highQualityFood : MonoBehaviour
     int movX;
     int movY;
 
-
 	// Use this for initialization
 	void Start()
     {

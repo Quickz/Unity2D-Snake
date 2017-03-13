@@ -13,7 +13,6 @@ public class Food : MonoBehaviour
     int movX;
     int movY;
 
-
     // Use this for initialization
     void Start()
     {
@@ -24,19 +23,6 @@ public class Food : MonoBehaviour
         // moving the food to a random position
         GameLogic.RespawnFood(food);
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        CheckForRestart();
-
-    }
-
-    void CheckForRestart()
-    {
-        if (Input.GetKeyDown("r"))
-            Destroy(gameObject);
     }
 
     // checks for any obstacles
