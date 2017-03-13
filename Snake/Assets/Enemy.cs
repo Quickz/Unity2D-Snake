@@ -16,6 +16,13 @@ public class Enemy : MonoBehaviour
     public Transform snake;
     Transform head;
 
+    /**
+     * tells the amount of steps the enemy
+     * has moved since last path search
+     * used to make the enemy slightly dumber
+     */
+    int stepped;
+
     float time;
     float mapX;
     float mapY;
@@ -37,6 +44,7 @@ public class Enemy : MonoBehaviour
 
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
+        stepped = 0;
 
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
@@ -351,7 +359,10 @@ public class Enemy : MonoBehaviour
         var enemyPos = GetGridCoord(head.position);
         var foodPos = GetGridCoord(target.position);
 
-        path = pathFinder.run(enemyPos, foodPos);
+        if (stepped > 0 && path.Count > 2 && path != null)
+            path.RemoveAt(0);
+        else
+            path = pathFinder.run(enemyPos, foodPos);
 
         if (path == null)
             DestroySelf();
@@ -364,7 +375,7 @@ public class Enemy : MonoBehaviour
 
             SetEnemyDir(oldPos, head.position);
             snakeLogic.BendTail();
-
+            stepped += stepped > 1 ? -stepped : 1;
         }
 
     }
