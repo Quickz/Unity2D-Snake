@@ -170,6 +170,11 @@ public class GameLogic : MonoBehaviour
         enemyObj.transform.parent = game.transform;
         enemy = enemyObj.GetComponent<Enemy>();
 
+        // adding a random amount of extra length to the enemy tail
+        int extraLength = Random.Range(0, 3);
+        for (int i = 0; i < extraLength; i++)
+            Snake.GrowSnake(enemyObj.transform, "enemyTail");
+
     }
 
     // moves the food to a random position
