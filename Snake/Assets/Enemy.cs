@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     Transform player;
 
     public Snake snakeLogic;
-    
+
     public Transform snake;
     Transform head;
 
@@ -63,38 +63,46 @@ public class Enemy : MonoBehaviour
 
             pathFinder.ClearGrid();
             GetGridObstacles();
-
-            if (exit == null)
-                MoveSnake(ClosestFood());
-            else if (!CheckForExit())
-                MoveSnake(exit);
-
+            MoveEnemy();
             snakeLogic.RestoreSpeed();
             time = 0;
 
         }
     }
 
+    void MoveEnemy()
+    {
+        var target = ClosestTarget();
+
+        if (exit == null)
+            MoveSnake(target);
+        else if (!CheckForExit())
+        {
+            if (GetDistance(target) > 3)
+                MoveSnake(exit);
+            else
+                MoveSnake(target);
+        }
+    }
+
     // returns the closest food
-    Transform ClosestFood()
+    Transform ClosestTarget()
     {
         int count = GameLogic.allFood.childCount;
+        Transform closest = GameLogic.food;
 
-        // if nothing to compare to
-        if (count < 1)
-            return GameLogic.food;
-
-        Transform closest = GameLogic.allFood.GetChild(0);
-
-        // obtaining the closest one of the list
-        for (int i = 1; i < count; i++)
+        // if something to compare to
+        if (count > 0)
         {
-            var food = GameLogic.allFood.GetChild(i);
-            closest = CloserFood(closest, food);
+            // obtaining the closest one of the list
+            for (int i = 0; i < count; i++)
+            {
+                var food = GameLogic.allFood.GetChild(i);
+                closest = CloserFood(closest, food);
+            }
         }
-
-        // comparing the main food with the rest
-        return CloserFood(closest, GameLogic.food);
+        
+        return closest;
     }
 
     // returns the food that is closer than the other
