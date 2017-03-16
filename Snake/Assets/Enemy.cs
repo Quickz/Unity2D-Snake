@@ -64,7 +64,7 @@ public class Enemy : MonoBehaviour
             pathFinder.ClearGrid();
             GetGridObstacles();
 
-            if (exit == null || ExitInsidePlayer())
+            if (exit == null)
                 MoveSnake(ClosestFood());
             else if (!CheckForExit())
                 MoveSnake(exit);
@@ -256,17 +256,6 @@ public class Enemy : MonoBehaviour
             coord = GenEnemySpwnCoord(antistuck);
         
         return coord;
-    }
-
-    bool ExitInsidePlayer()
-    {
-        for (int i = 0; i < player.childCount; i++)
-        {
-            var pos = player.GetChild(i).position;
-            if (exit.position == pos)
-                return true;
-        }
-        return false;
     }
 
     bool OutsideSnakeCoord(float[] coord, Transform snake)
