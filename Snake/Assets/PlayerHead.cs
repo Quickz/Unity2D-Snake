@@ -32,7 +32,7 @@ public class PlayerHead : MonoBehaviour
                 GameLogic.UpScore(10);
             Snake.GrowSnake(snake, "tail");
             GameLogic.RespawnFood(GameLogic.food);
-
+            RandomOccurrence();
         }
         else if (col.name == "highQualityFood")
         {
@@ -55,6 +55,19 @@ public class PlayerHead : MonoBehaviour
         else if (col.name == "tail" || col.name == "head" || col.name == "poop")
             GameLogic.GameOver();
 
+    }
+
+    // spawns a piece of food/enemy or does nothing
+    void RandomOccurrence()
+    {
+        int choice = Random.Range(0, 11);
+
+        if (choice < 4)
+            GameLogic.CreateFood("highQualityFood");
+        else if (choice < 8)
+            GameLogic.CreateFood("randomBonus");
+        else if (choice < 10)
+            GameLogic.CreateEnemy();
     }
 
 }

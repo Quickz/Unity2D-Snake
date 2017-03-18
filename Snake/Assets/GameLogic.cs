@@ -23,7 +23,7 @@ public class GameLogic : MonoBehaviour
     public static float mapX { get; private set; }
     public static float mapY { get; private set; }
 
-    Transform game;
+    public static Transform game;
     public static Transform snake { get; private set; }
     public static Transform food { get; private set; }
 
@@ -93,7 +93,7 @@ public class GameLogic : MonoBehaviour
             player.CheckForInput();
 
         // spawn enemy - temporary
-        if (Input.GetKeyDown("h") && enemy == null)
+        if (Input.GetKeyDown("h"))
             CreateEnemy();
         // destroy enemy - temporary
         else if (Input.GetKeyDown("j") && enemy != null && enemy.exit == null)
@@ -161,8 +161,10 @@ public class GameLogic : MonoBehaviour
     }
 
     // creates a red enemy snake
-    public void CreateEnemy()
+    public static void CreateEnemy()
     {
+        if (enemy != null) return;
+
         var enemyObj = Object.Instantiate(
             Resources.Load("enemy")
         ) as GameObject;
