@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     public Transform snake;
     Transform head;
 
+    float timeLeft;
+
     /**
      * tells the amount of steps the enemy
      * has moved since last path search
@@ -45,6 +47,7 @@ public class Enemy : MonoBehaviour
         pathFinder = new AStarSearch(GenMapGrid());
         exit = null;
         stepped = 0;
+        timeLeft = Random.Range(25, 60);
 
         if (GenEnemySpwnCoord() == null)
             Debug.Log("coordintes not found..");
@@ -57,6 +60,10 @@ public class Enemy : MonoBehaviour
         if (GameLogic.gamePaused || GameLogic.gameOver) return;
         else CheckForRestart();
 
+        if (timeLeft <= 0 && exit == null)
+            CreateEnemyExit();
+
+        timeLeft -= Time.deltaTime;
         time += Time.deltaTime;
         if (time >= snakeLogic.speed)
         {
