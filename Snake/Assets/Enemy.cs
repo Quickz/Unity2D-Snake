@@ -413,6 +413,15 @@ public class Enemy : MonoBehaviour
             pathFinder.grid[pos[0], pos[1]] = 1;
         }
 
+        // other
+        int count = GameLogic.allObstacles.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            var child = GameLogic.allObstacles.GetChild(i);
+            int[] pos = GetGridCoord(child.position);
+            pathFinder.grid[pos[0], pos[1]] = 1;
+        }
+
     }
 
     // generates empty grid

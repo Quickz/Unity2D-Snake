@@ -43,11 +43,22 @@ public class randomFood : MonoBehaviour
             var tail = snake.snake.GetChild(count - 1);
 
             // generating poop
-            var food = GameLogic.CreateFood("poop");
+            var food = CreatePoop();
             food.transform.position = tail.position;
 
             Destroy(tail.gameObject);
         }
+    }
+
+    GameObject CreatePoop()
+    {
+        var food = Object.Instantiate(
+            Resources.Load("poop")
+        ) as GameObject;
+
+        food.transform.parent = GameLogic.allObstacles;
+        food.name = "poop";
+        return food;
     }
 
 }
