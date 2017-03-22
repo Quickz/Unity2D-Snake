@@ -32,7 +32,7 @@ public class GameLogic : MonoBehaviour
     GameObject gamePausedNote;
 
     Menu menu;
-    GameObject returnWarning;
+    GameObject currWarning;
 
     // awake is used to assign variables
     // before all the other objects Start()
@@ -74,9 +74,9 @@ public class GameLogic : MonoBehaviour
     {
 
         if (Input.GetKeyDown("escape"))
-            ToggleReturnWarning();
+            ToggleWarning(false);
         if (Input.GetKeyDown("r"))
-            RestartGame();
+            ToggleWarning(true);
         if (gameOver)
             return;
         else if (Input.GetKeyDown("p"))
@@ -84,8 +84,8 @@ public class GameLogic : MonoBehaviour
             if (!gamePaused) PauseGame();
             else
             {
-                if (returnWarning != null)
-                    Destroy(returnWarning);
+                if (currWarning != null)
+                    Destroy(currWarning);
                 ResumeGame();
 
             }
@@ -119,28 +119,36 @@ public class GameLogic : MonoBehaviour
 
     // creates/hides a warning message
     // and pauses/unpauses the game
-    void ToggleReturnWarning()
+    void ToggleWarning(bool toggleRestart)
     {
-        if (returnWarning == null)
+        if (currWarning == null)
         {
-            CreateReturnWarning();
+            if (toggleRestart)
+                CreateRestartWarning();
+            else
+                CreateReturnWarning();
             if (!gamePaused && !gameOver) PauseGame();
         }
         else
         {
-            Destroy(returnWarning);
-            if (!gameOver)
-                ResumeGame();
+            Destroy(currWarning);
+            if (!gameOver) ResumeGame();
         }
     }
 
     public void CreateReturnWarning()
     {
-        returnWarning = Object.Instantiate(
+        if (gameOver)
+        {
+            menu.ChangeScene("Main Menu");
+            return;
+        }
+
+        currWarning = Object.Instantiate(
             Resources.Load("ReturnWarning")
         ) as GameObject;
 
-        var warning = returnWarning.transform;
+        var warning = currWarning.transform;
 
         // obtaining button component
         var yesBtn = warning.GetChild(0).GetComponent<Button>();
@@ -148,7 +156,7 @@ public class GameLogic : MonoBehaviour
 
         // adding button events
         yesBtn.onClick.AddListener(() => menu.ChangeScene("Main Menu"));
-        noBtn.onClick.AddListener(() => ToggleReturnWarning());
+        noBtn.onClick.AddListener(() => ToggleWarning(false));
 
     }
 
@@ -252,6 +260,29 @@ public class GameLogic : MonoBehaviour
             Resources.Load("gameOver")
             ) as GameObject;
         gameOverNote.name = "gameOver";
+    }
+
+    void CreateRestartWarning()
+    {
+        if (gameOver)
+        {
+            RestartGame();
+            return;
+        }
+
+        currWarning = Object.Instantiate(
+            Resources.Load("restartWarning")
+            ) as GameObject;
+
+        var warning = currWarning.transform;
+
+        // obtaining button component
+        var yesBtn = warning.GetChild(0).GetComponent<Button>();
+        var noBtn = warning.GetChild(1).GetComponent<Button>();
+
+        // adding button events
+        yesBtn.onClick.AddListener(() => RestartGame());
+        noBtn.onClick.AddListener(() => ToggleWarning(true));
     }
 
     void RestartGame()
