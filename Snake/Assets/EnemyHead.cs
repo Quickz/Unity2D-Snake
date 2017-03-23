@@ -29,17 +29,23 @@ public class EnemyHead : MonoBehaviour
             if (enemy.snake.transform.childCount < 10)
                 Snake.GrowSnake(enemy.snake.transform, "enemyTail");
             GameLogic.RespawnFood(GameLogic.food);
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "highQualityFood" || col.name == "tinyFood")
+        {
             Destroy(col.gameObject);
+            GameLogic.PlaySound("eat");
+        }
         else if (col.name == "randomBonus")
         {
             var food = col.gameObject.GetComponent<randomFood>();
             food.GetBonus(snakeLogic);
             Destroy(col.gameObject);
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "tail" || col.name == "head" || col.name == "poop")
         {
+            GameLogic.PlaySound("hit");
             enemy.GenerateFood();
             enemy.DestroySelf();
         }

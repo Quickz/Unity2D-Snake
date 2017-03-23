@@ -285,6 +285,14 @@ public class GameLogic : MonoBehaviour
         noBtn.onClick.AddListener(() => ToggleWarning(true));
     }
 
+    public static void PlaySound(string dir)
+    {
+        Transform game = GameObject.Find("game").transform;
+        AudioSource audio = game.GetComponent<AudioSource>();
+        audio.clip = Resources.Load("sounds/" + dir) as AudioClip;
+        audio.Play();
+    }
+
     void RestartGame()
     {
         Scene scene = SceneManager.GetActiveScene();

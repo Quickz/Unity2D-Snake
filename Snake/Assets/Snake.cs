@@ -18,7 +18,6 @@ public class Snake : MonoBehaviour
         speed = defaultSpeed;
         snake = gameObject.transform;
         head = snake.GetChild(0);
-
     }
 
     /**

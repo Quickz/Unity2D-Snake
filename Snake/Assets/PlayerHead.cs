@@ -33,6 +33,7 @@ public class PlayerHead : MonoBehaviour
             Snake.GrowSnake(snake, "tail");
             GameLogic.RespawnFood(GameLogic.food);
             RandomOccurrence();
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "highQualityFood")
         {
@@ -40,20 +41,26 @@ public class PlayerHead : MonoBehaviour
             float time = col.GetComponent<timeLimit>().timeLeft;
             GameLogic.UpScore((int)Mathf.Round(time) * 10);
             Destroy(col.gameObject);
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "randomBonus")
         {
             var food = col.gameObject.GetComponent<randomFood>();
             food.GetBonus(snakeLogic);
             Destroy(col.gameObject);
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "tinyFood")
         {
             GameLogic.UpScore(5);
             Destroy(col.gameObject);
+            GameLogic.PlaySound("eat");
         }
         else if (col.name == "tail" || col.name == "head" || col.name == "poop")
+        {
             GameLogic.GameOver();
+            GameLogic.PlaySound("hit");
+        }
 
     }
 
