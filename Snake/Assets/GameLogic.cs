@@ -33,6 +33,7 @@ public class GameLogic : MonoBehaviour
 
     Menu menu;
     GameObject currWarning;
+    static GameObject darkBackground;
 
     // awake is used to assign variables
     // before all the other objects Start()
@@ -239,6 +240,10 @@ public class GameLogic : MonoBehaviour
     // checks if the head is inside the tail
     public static void GameOver()
     {
+        darkBackground = Instantiate(
+            Resources.Load("darkBackground")
+            ) as GameObject;
+
         GameOverNotification();
         SetHeadColor(Color.red);
         gameOver = true;
@@ -304,12 +309,18 @@ public class GameLogic : MonoBehaviour
         gamePausedNote = Instantiate(
             Resources.Load("gamePaused")
             ) as GameObject;
+
+        darkBackground = Instantiate(
+            Resources.Load("darkBackground")
+            ) as GameObject;
+
         gamePausedNote.name = "gamePaused";
         gamePaused = true;
     }
 
     void ResumeGame()
     {
+        Destroy(darkBackground);
         Destroy(gamePausedNote);
         gamePaused = false;
     }
