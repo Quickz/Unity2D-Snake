@@ -11,3 +11,5 @@ EditorBuildSettings:
     path: Assets/Resources/Main Menu.unity
   - enabled: 1
     path: Assets/Resources/Snake.unity
+  - enabled: 1
+    path: Assets/Resources/Scores.unity

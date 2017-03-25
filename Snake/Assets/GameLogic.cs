@@ -249,7 +249,7 @@ public class GameLogic : MonoBehaviour
         gameOver = true;
 
         time = 0;
-
+        ScoresMenu.SaveScore();
     }
 
     static void SetHeadColor(Color color)

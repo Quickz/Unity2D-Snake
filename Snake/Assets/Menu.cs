@@ -8,22 +8,34 @@ public class Menu : MonoBehaviour
 {
 
     GameObject start;
-    EventSystem eventSystem;
+    static EventSystem eventSystem;
 
     void Start()
     {
         start = GameObject.Find("startGame");
-        eventSystem = EventSystem.current;
-        eventSystem.SetSelectedGameObject(start);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        InitMenuControls(start);
+
     }
 
     void Update()
     {
-        if (eventSystem.currentSelectedGameObject == null)
-            eventSystem.SetSelectedGameObject(start);
+        RestoreFocus(start);
 
+    }
+
+    public static void RestoreFocus(GameObject button)
+    {
+        if (eventSystem.currentSelectedGameObject == null)
+            eventSystem.SetSelectedGameObject(button);
+    }
+
+    // hides cursor and moves focus to a button
+    public static void InitMenuControls(GameObject button)
+    {
+        eventSystem = EventSystem.current;
+        eventSystem.SetSelectedGameObject(button);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void ChangeScene(string scene)
