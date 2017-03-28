@@ -7,8 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class ScoresMenu : MonoBehaviour
 {
+    // scores
+    GameObject canvas;
+    GameObject resetBtn;
+    GameObject backBtn;
 
-    GameObject back;
+    // warning
+    GameObject warning;
+    GameObject yesBtn;
+
     List<Text> scoreTxt;
 
 	void Start()
@@ -16,15 +23,24 @@ public class ScoresMenu : MonoBehaviour
         scoreTxt = new List<Text>();
         GetScoreContainers();
         UpdateScoreDisplay();
-        back = GameObject.Find("back");
-        Menu.InitMenuControls(back);
+        canvas = GameObject.Find("Canvas");
+        backBtn = GameObject.Find("back");
+        resetBtn = GameObject.Find("reset");
+        warning = GameObject.Find("resetWarning");
+        yesBtn = GameObject.Find("yesBtn");
+        HideWarning();
     }
 
     void Update()
     {
         if (Input.GetKeyDown("escape"))
-            ChangeScene("Main Menu");
-        Menu.RestoreFocus(back);
+        {
+            if (canvas.activeSelf)
+                ChangeScene("Main Menu");
+            else
+                HideWarning();
+        }
+        Menu.RestoreFocus(canvas.activeSelf ? backBtn : yesBtn);
     }
 
     public void ResetScores()
@@ -72,6 +88,20 @@ public class ScoresMenu : MonoBehaviour
         List<int> score = LoadScores();
         for (int i = 0; i < scoreTxt.Count; i++)
             scoreTxt[i].text = score[i].ToString();
+    }
+
+    public void ShowWarning()
+    {
+        canvas.SetActive(false);
+        warning.SetActive(true);
+        Menu.SwitchFocus(yesBtn);
+    }
+
+    public void HideWarning()
+    {
+        canvas.SetActive(true);
+        warning.SetActive(false);
+        Menu.SwitchFocus(resetBtn);
     }
 
     public void ChangeScene(string scene)

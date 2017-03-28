@@ -32,10 +32,15 @@ public class Menu : MonoBehaviour
     // hides cursor and moves focus to a button
     public static void InitMenuControls(GameObject button)
     {
-        eventSystem = EventSystem.current;
-        eventSystem.SetSelectedGameObject(button);
+        SwitchFocus(button);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public static void SwitchFocus(GameObject button)
+    {
+        eventSystem = EventSystem.current;
+        eventSystem.SetSelectedGameObject(button);
     }
 
     public void ChangeScene(string scene)
