@@ -53,7 +53,7 @@ public class randomFood : MonoBehaviour
     GameObject CreatePoop()
     {
         var food = Object.Instantiate(
-            Resources.Load("poop")
+            Resources.Load("food/poop")
         ) as GameObject;
 
         food.transform.parent = GameLogic.allObstacles;

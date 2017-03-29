@@ -353,7 +353,7 @@ public class Enemy : MonoBehaviour
         }
 
         var exitObj = Instantiate(
-            Resources.Load("enemyExit")
+            Resources.Load("enemy/enemyExit")
         ) as GameObject;
 
         exitObj.name = "enemyExit";

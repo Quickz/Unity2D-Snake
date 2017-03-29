@@ -110,6 +110,7 @@ public class Snake : MonoBehaviour
 
     public void SetSpr(Transform obj, string spritePath)
     {
+        spritePath = "sprites/" + spritePath;
         var spr = obj.GetComponent<SpriteRenderer>();
         spr.sprite = Resources.Load<Sprite>(spritePath);
     }

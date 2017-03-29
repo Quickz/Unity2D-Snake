@@ -146,7 +146,7 @@ public class GameLogic : MonoBehaviour
         }
 
         currWarning = Object.Instantiate(
-            Resources.Load("ReturnWarning")
+            Resources.Load("overlay/ReturnWarning")
         ) as GameObject;
 
         var warning = currWarning.transform;
@@ -164,7 +164,7 @@ public class GameLogic : MonoBehaviour
     public static GameObject CreateFood(string name)
     {
         var food = Object.Instantiate(
-            Resources.Load(name)
+            Resources.Load("food/" + name)
         ) as GameObject;
 
         food.transform.parent = allFood;
@@ -178,7 +178,7 @@ public class GameLogic : MonoBehaviour
         if (enemy != null) return;
 
         var enemyObj = Object.Instantiate(
-            Resources.Load("enemy")
+            Resources.Load("enemy/enemy")
         ) as GameObject;
 
         enemyObj.transform.parent = game.transform;
@@ -187,7 +187,7 @@ public class GameLogic : MonoBehaviour
         // adding a random amount of extra length to the enemy tail
         int extraLength = Random.Range(0, 3);
         for (int i = 0; i < extraLength; i++)
-            Snake.GrowSnake(enemyObj.transform, "enemyTail");
+            Snake.GrowSnake(enemyObj.transform, "enemy/enemyTail");
 
     }
 
@@ -241,7 +241,7 @@ public class GameLogic : MonoBehaviour
     public static void GameOver()
     {
         darkBackground = Instantiate(
-            Resources.Load("darkBackground")
+            Resources.Load("overlay/darkBackground")
             ) as GameObject;
 
         GameOverNotification();
@@ -262,7 +262,7 @@ public class GameLogic : MonoBehaviour
     static void GameOverNotification()
     {
         gameOverNote = Instantiate(
-            Resources.Load("gameOver")
+            Resources.Load("overlay/gameOver")
             ) as GameObject;
         gameOverNote.name = "gameOver";
     }
@@ -276,7 +276,7 @@ public class GameLogic : MonoBehaviour
         }
 
         currWarning = Object.Instantiate(
-            Resources.Load("restartWarning")
+            Resources.Load("overlay/restartWarning")
             ) as GameObject;
 
         var warning = currWarning.transform;
@@ -307,11 +307,11 @@ public class GameLogic : MonoBehaviour
     void PauseGame()
     {
         gamePausedNote = Instantiate(
-            Resources.Load("gamePaused")
+            Resources.Load("overlay/gamePaused")
             ) as GameObject;
 
         darkBackground = Instantiate(
-            Resources.Load("darkBackground")
+            Resources.Load("overlay/darkBackground")
             ) as GameObject;
 
         gamePausedNote.name = "gamePaused";
