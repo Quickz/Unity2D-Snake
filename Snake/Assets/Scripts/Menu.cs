@@ -8,13 +8,17 @@ public class Menu : MonoBehaviour
 {
 
     GameObject start;
+    GameObject scores;
     static EventSystem eventSystem;
+    static bool scoreFocused;
 
     void Start()
     {
         start = GameObject.Find("startGame");
+        scores = GameObject.Find("scores");
         InitMenuControls(start);
-
+        if (scoreFocused) SwitchFocus(scores);
+        scoreFocused = false;
     }
 
     void Update()
@@ -45,6 +49,7 @@ public class Menu : MonoBehaviour
 
     public void ChangeScene(string scene)
     {
+        if (scene == "Scores") scoreFocused = true;
         SceneManager.LoadScene(scene);
     }
 

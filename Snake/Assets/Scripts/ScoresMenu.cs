@@ -29,6 +29,7 @@ public class ScoresMenu : MonoBehaviour
         warning = GameObject.Find("resetWarning");
         yesBtn = GameObject.Find("yesBtn");
         HideWarning();
+        Menu.SwitchFocus(backBtn);
     }
 
     void Update()
