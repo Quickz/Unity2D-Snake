@@ -12,10 +12,7 @@ public class ScoresMenu : MonoBehaviour
     GameObject resetBtn;
     GameObject backBtn;
 
-    // warning
     GameObject warning;
-    GameObject yesBtn;
-
     List<Text> scoreTxt;
 
 	void Start()
@@ -26,9 +23,6 @@ public class ScoresMenu : MonoBehaviour
         canvas = GameObject.Find("Canvas");
         backBtn = GameObject.Find("back");
         resetBtn = GameObject.Find("reset");
-        warning = GameObject.Find("resetWarning");
-        yesBtn = GameObject.Find("yesBtn");
-        HideWarning();
         Menu.SwitchFocus(backBtn);
     }
 
@@ -39,15 +33,17 @@ public class ScoresMenu : MonoBehaviour
             if (canvas.activeSelf)
                 ChangeScene("Main Menu");
             else
-                HideWarning();
+                ToggleWarning();
         }
-        Menu.RestoreFocus(canvas.activeSelf ? backBtn : yesBtn);
+        if (canvas.activeSelf)
+            Menu.RestoreFocus(backBtn);
     }
 
     public void ResetScores()
     {
         PlayerPrefs.DeleteAll();
         UpdateScoreDisplay();
+        ToggleWarning();
     }
 
     public static void SaveScore()
@@ -91,18 +87,22 @@ public class ScoresMenu : MonoBehaviour
             scoreTxt[i].text = score[i].ToString();
     }
 
-    public void ShowWarning()
+    public void ToggleWarning()
     {
-        canvas.SetActive(false);
-        warning.SetActive(true);
-        Menu.SwitchFocus(yesBtn);
-    }
-
-    public void HideWarning()
-    {
-        canvas.SetActive(true);
-        warning.SetActive(false);
-        Menu.SwitchFocus(resetBtn);
+        if (canvas.activeSelf)
+        {
+            canvas.SetActive(false);
+            warning = Warning.CreateWarning("Are you sure you want to reset your highscores?");
+            var yesBtn = Warning.GetYesBtn(warning);
+            var noBtn = Warning.GetNoBtn(warning);
+            noBtn.onClick.AddListener(() => ToggleWarning());
+            yesBtn.onClick.AddListener(() => ResetScores());
+        }
+        else
+        {
+            canvas.SetActive(true);
+            Menu.SwitchFocus(resetBtn);
+        }
     }
 
     public void ChangeScene(string scene)

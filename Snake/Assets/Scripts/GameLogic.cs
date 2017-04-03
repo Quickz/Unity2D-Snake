@@ -74,13 +74,17 @@ public class GameLogic : MonoBehaviour
     void Update()
     {
 
+        // exit to main menu
         if (Input.GetKeyDown("escape"))
             ToggleWarning(false);
+
+        // restart the game
         if (Input.GetKeyDown("r"))
             ToggleWarning(true);
-        if (gameOver)
-            return;
-        else if (Input.GetKeyDown("p"))
+
+        if (gameOver) return;
+
+        if (Input.GetKeyDown("p"))
         {
             if (!gamePaused) PauseGame();
             else
@@ -132,8 +136,11 @@ public class GameLogic : MonoBehaviour
         }
         else
         {
-            Destroy(currWarning);
-            if (!gameOver) ResumeGame();
+            if (!toggleRestart)
+            {
+                Destroy(currWarning);
+                if (!gameOver) ResumeGame();
+            }
         }
     }
 
@@ -145,15 +152,13 @@ public class GameLogic : MonoBehaviour
             return;
         }
 
-        currWarning = Object.Instantiate(
-            Resources.Load("overlay/ReturnWarning")
-        ) as GameObject;
+        currWarning = Warning.CreateWarning("Are you sure you want to return to main menu?");
 
         var warning = currWarning.transform;
 
         // obtaining button component
-        var yesBtn = warning.GetChild(0).GetComponent<Button>();
-        var noBtn = warning.GetChild(1).GetComponent<Button>();
+        var yesBtn = Warning.GetYesBtn(currWarning);
+        var noBtn = Warning.GetNoBtn(currWarning);
 
         // adding button events
         yesBtn.onClick.AddListener(() => menu.ChangeScene("Main Menu"));
@@ -275,19 +280,17 @@ public class GameLogic : MonoBehaviour
             return;
         }
 
-        currWarning = Object.Instantiate(
-            Resources.Load("overlay/restartWarning")
-            ) as GameObject;
+        currWarning = Warning.CreateWarning("Are you sure you want to restart the game?");
 
         var warning = currWarning.transform;
 
         // obtaining button component
-        var yesBtn = warning.GetChild(0).GetComponent<Button>();
-        var noBtn = warning.GetChild(1).GetComponent<Button>();
+        var yesBtn = Warning.GetYesBtn(currWarning);
+        var noBtn = Warning.GetNoBtn(currWarning);
 
         // adding button events
         yesBtn.onClick.AddListener(() => RestartGame());
-        noBtn.onClick.AddListener(() => ToggleWarning(true));
+        noBtn.onClick.AddListener(() => ResumeGame());
     }
 
     public static void PlaySound(string dir)

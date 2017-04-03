@@ -57,8 +57,8 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        if (GameLogic.gamePaused || GameLogic.gameOver) return;
-        else CheckForRestart();
+        if (GameLogic.gamePaused || GameLogic.gameOver)
+            return;
 
         if (timeLeft <= 0 && exit == null)
             CreateEnemyExit();
@@ -139,12 +139,6 @@ public class Enemy : MonoBehaviour
     {
         float result = val1 - val2;
         return Mathf.Abs(result);
-    }
-
-    void CheckForRestart()
-    {
-        if (Input.GetKeyDown("r"))
-            DestroySelf();
     }
 
     public void DestroySelf()
