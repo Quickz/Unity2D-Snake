@@ -100,17 +100,6 @@ public class GameLogic : MonoBehaviour
         else
             player.CheckForInput();
 
-        // spawn enemy - temporary
-        if (Input.GetKeyDown("h"))
-            CreateEnemy();
-        // destroy enemy - temporary
-        else if (Input.GetKeyDown("j") && enemy != null && enemy.exit == null)
-            enemy.CreateEnemyExit();
-        else if (Input.GetKeyDown("f"))
-            CreateFood("highQualityFood");
-        else if (Input.GetKeyDown("g"))
-            CreateFood("randomBonus");
-
         time += Time.deltaTime;
         if (time >= gameSpeed)
             time = 0;
