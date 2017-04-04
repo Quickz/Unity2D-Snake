@@ -16,7 +16,8 @@ public class Menu : MonoBehaviour
     {
         start = GameObject.Find("startGame");
         scores = GameObject.Find("scores");
-        InitMenuControls(start);
+        SwitchFocus(start);
+        Cursor.visible = false;
         if (scoreFocused) SwitchFocus(scores);
         scoreFocused = false;
     }
@@ -33,14 +34,6 @@ public class Menu : MonoBehaviour
             eventSystem.SetSelectedGameObject(button);
     }
 
-    // hides cursor and moves focus to a button
-    public static void InitMenuControls(GameObject button)
-    {
-        SwitchFocus(button);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
     public static void SwitchFocus(GameObject button)
     {
         eventSystem = EventSystem.current;
@@ -51,11 +44,6 @@ public class Menu : MonoBehaviour
     {
         if (scene == "Scores") scoreFocused = true;
         SceneManager.LoadScene(scene);
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
     }
 
 }
