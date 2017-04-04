@@ -63,9 +63,6 @@ public class GameLogic : MonoBehaviour
         allObstacles = GameObject.Find("allObstacles").transform;
         RespawnFood(food);
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
         menu = gameObject.GetComponent<Menu>();
 
     }

@@ -17,7 +17,6 @@ public class Menu : MonoBehaviour
         start = GameObject.Find("startGame");
         scores = GameObject.Find("scores");
         SwitchFocus(start);
-        Cursor.visible = false;
         if (scoreFocused) SwitchFocus(scores);
         scoreFocused = false;
     }
